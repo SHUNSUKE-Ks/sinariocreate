@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>キャラクターを作る</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'MS Gothic', monospace;
+            background-color: #000;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-top: 70px; /* ヘッダーの高さ分 */
+        }
+
+        /* 新しいヘッダー */
+        .header-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #111;
+            border-bottom: 1px solid #666;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .character-icon {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #000;
+            object-fit: cover; /* 画像がコンテナに収まるように調整 */
+        }
+
+        .speech-bubble {
+            position: relative;
+            background: #fff;
+            color: #000;
+            border: 2px solid #000;
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+
+        .speech-bubble:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -10px;
+            margin-top: -10px;
+            border-width: 10px 10px 10px 0;
+            border-style: solid;
+            border-color: transparent #fff transparent transparent;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-info {
+            font-size: 14px;
+        }
+
+        .header-btn {
+            background-color: #333;
+            border: 1px solid #666;
+            color: #fff;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .header-btn:hover {
+            background-color: #555;
+        }
+
+
+        /* モバイル対応のレスポンシブデザイン */
+        .container {
+            max-width: 100%;
+            margin: 0;
+            padding: 10px;
+        }
+
+        /* タブナビゲーション */
+        .tab-nav {
+            display: flex;
+            background-color: #111;
+            border: 1px solid #666;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 80px;
+            background-color: #333;
+            border: none;
+            border-right: 1px solid #666;
+            color: #fff;
+            padding: 12px 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .tab-btn:last-child {
+            border-right: none;
+        }
+
+        .tab-btn.active {
+            background-color: #555;
+        }
+
+        .tab-btn:hover {
+            background-color: #444;
+        }
+
+        /* タブコンテンツ */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* 共通パネルスタイル */
+        .panel {
+            border: 2px solid #666;
+            padding: 15px;
+            background-color: #111;
+            margin-bottom: 15px;
+        }
+
+        /* 基本情報タブ */
+        .name-section {
+            border: 1px solid #666;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        .name-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .name-field {
+            background-color: #000;
+            border: 1px solid #666;
+            color: #fff;
+            padding: 8px;
+            font-family: inherit;
+            flex: 1;
+            font-size: 16px;
+        }
+
+        .icon-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .icon-btn {
+            background-color: #333;
+            border: 1px solid #666;
+            color: #fff;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .icon-btn:hover {
+            background-color: #555;
+        }
+
+        .description-area,
+        .appearance-area {
+            border: 1px solid #666;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        .description-label {
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .description-text,
+        .appearance-text {
+            background-color: #000;
+            border: 1px solid #666;
+            color: #fff;
+            width: 100%;
+            height: 100px;
+            padding: 8px;
+            font-family: inherit;
+            resize: none;
+            font-size: 14px;
+        }
+
+        .points-section {
+            border: 1px solid #666;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .points-display {
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .bottom-buttons {
+            display: flex;
+            flex-direction: column; /* 縦並びに変更 */
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .bottom-btn {
+            background-color: #333;
+            border: 1px solid #666;
+            color: #fff;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            min-height: 44px;
+            width: 100%; /* 幅を100%に */
+        }
+
+        .bottom-btn:hover {
+            background-color: #555;
+        }
+
+        /* キャラクター表示タブ */
+        .character-display {
+            border: 1px solid #666;
+            background-color: #222;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #888;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* 能力値タブ */
+        .stats-section {
+            border: 1px solid #666;
+            padding: 15px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 16px;
+            padding: 8px;
+            background-color: #222;
+            border: 1px solid #444;
+        }
+
+        .stat-name {
+            flex: 1;
+            font-weight: bold;
+        }
+
+        .stat-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat-btn {
+            background-color: #333;
+            border: 1px solid #666;
+            color: #fff;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .stat-btn:hover {
+            background-color: #555;
+        }
+
+        .stat-value {
+            min-width: 40px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* スキル・特質タブ */
+        .skills-section,
+        .traits-section {
+            border: 1px solid #666;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .skill-row,
+        .trait-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #222;
+            border: 1px solid #444;
+        }
+
+        .skill-name,
+        .trait-name {
+            background-color: #000;
+            border: 1px solid #666;
+            color: #fff;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .skill-dict,
+        .trait-dict {
+            background-color: #000;
+            border: 1px solid #666;
+            color: #fff;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        /* サイドパネル */
+        .side-panel {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100vh;
+            background-color: #111;
+            border-left: 2px solid #666;
+            padding: 20px;
+            transition: right 0.3s ease;
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .side-panel.open {
+            right: 0;
+        }
+
+        .side-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #666;
+        }
+
+        .side-panel-close {
+            background-color: #333;
+            border: 1px solid #666;
+            color: #fff;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* オーバーレイ */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .header-right {
+                gap: 10px;
+            }
+            .header-btn {
+                padding: 8px;
+                font-size: 12px;
+            }
+            .speech-bubble {
+                display: none; /* 狭い画面では吹き出しを隠す */
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding-top: 60px;
+            }
+            .character-icon {
+                width: 40px;
+                height: 40px;
+            }
+            .header-info {
+                font-size: 12px;
+            }
+            .container {
+                padding: 5px;
+            }
+
+            .tab-btn {
+                padding: 10px 6px;
+                font-size: 11px;
+            }
+
+            .panel {
+                padding: 10px;
+            }
+        }
+    .book-viewer {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vw;
+            max-width: 600px;
+            height: 70vh;
+            background-color: #111;
+            border: 2px solid #666;
+            z-index: 1001;
+            display: none; /* Initially hidden */
+            flex-direction: column;
+        }
+
+        .book-viewer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #666;
+        }
+
+        .book-viewer-content {
+            padding: 15px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            flex-grow: 1;
+            font-family: inherit;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="overlay" onclick="closeSidePanel(); closeBookViewer();"></div>
+
+    <!-- Book Viewer Modal -->
+    <div class="book-viewer">
+        <div class="book-viewer-header">
+            <h3 id="book-viewer-title"></h3>
+            <button class="side-panel-close" onclick="closeBookViewer()">×</button>
+        </div>
+        <pre class="book-viewer-content"></pre>
+    </div>
+    <input type="file" id="skill-book-input" style="display: none;" accept=".jsonc,.json">
+    <input type="file" id="trait-book-input" style="display: none;" accept=".jsonc,.json">
+
+    <!-- ヘッダー -->
+    <header class="header-container">
+        <div class="header-left">
+            <img src="assets/Wizard_OldMan_Front_Pixel.png" alt="Character Icon" class="character-icon">
+            <div class="speech-bubble" id="speech-bubble-text">...</div>
+        </div>
+        <div class="header-right">
+            <div class="header-info">残り才能: <span id="header-remaining-points">30</span></div>
+            <button class="header-btn" id="reset-button">リセット</button>
+            <button class="header-btn" onclick="openSidePanel()">メニュー</button>
+        </div>
+    </header>
+
+    <!-- サイドパネル（メニュー） -->
+    <div class="side-panel">
+        <div class="side-panel-header">
+            <h3>メニュー</h3>
+            <button class="side-panel-close" onclick="closeSidePanel()">×</button>
+        </div>
+        <div class="points-section">
+            <div class="bottom-buttons">
+                <button class="bottom-btn" id="start-life-btn">人生を始める</button>
+                <button class="bottom-btn" id="save-local-btn">ローカル保存</button>
+                <button class="bottom-btn" id="save-firebase-btn">Firebase保存</button>
+                <button class="bottom-btn" id="random-btn">ランダム</button>
+                <button class="bottom-btn" id="load-skill-book-btn">スキルブック読込</button>
+                <button class="bottom-btn" id="load-trait-book-btn">特質ブック読込</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- タブナビゲーション -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" onclick="showTab('basic')">基本</button>
+            <button class="tab-btn" onclick="showTab('visual')">外見</button>
+            <button class="tab-btn" onclick="showTab('stats')">能力値</button>
+            <button class="tab-btn" onclick="showTab('skills')">技能</button>
+        </nav>
+
+        <!-- 基本情報タブ -->
+        <div class="tab-content active" id="basic">
+            <div class="panel">
+                <div class="name-section">
+                    <div class="name-input">
+                        <input type="text" class="name-field" value="" maxlength="20" placeholder="名前を入力">
+                        <div class="icon-buttons">
+                            <button class="icon-btn" title="性別">♂</button>
+                            <button class="icon-btn" title="ランダム">⚃</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="description-area">
+                    <div class="description-label">出自:</div>
+                    <textarea class="description-text" placeholder="キャラクターの出自を入力してください..."></textarea>
+                </div>
+
+                 <div class="points-section">
+                    <div class="points-display">残り才能: 30</div>
+                    <div class="bottom-buttons">
+                        <button class="bottom-btn">戻る</button>
+                        <button class="bottom-btn">プリセット</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 外見タブ -->
+        <div class="tab-content" id="visual">
+            <div class="panel">
+                <div class="character-display">
+                    <div>キャラクターのビジュアル表示エリア<br>（ここに3Dモデルやイラストを表示）</div>
+                </div>
+
+                <div class="appearance-area">
+                    <div class="description-label">外見詳細:</div>
+                    <textarea class="appearance-text" placeholder="キャラクターの外見を入力してください..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- 能力値タブ -->
+        <div class="tab-content" id="stats">
+            <div class="panel">
+                <div class="stats-section">
+                    <div class="stat-row">
+                        <span class="stat-name">筋力</span>
+                        <div class="stat-controls">
+                            <button class="stat-btn" onclick="changeStat(this, -1)">−</button>
+                            <span class="stat-value">10</span>
+                            <button class="stat-btn" onclick="changeStat(this, 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-name">器用さ</span>
+                        <div class="stat-controls">
+                            <button class="stat-btn" onclick="changeStat(this, -1)">−</button>
+                            <span class="stat-value">10</span>
+                            <button class="stat-btn" onclick="changeStat(this, 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-name">耐久力</span>
+                        <div class="stat-controls">
+                            <button class="stat-btn" onclick="changeStat(this, -1)">−</button>
+                            <span class="stat-value">10</span>
+                            <button class="stat-btn" onclick="changeStat(this, 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-name">知力</span>
+                        <div class="stat-controls">
+                            <button class="stat-btn" onclick="changeStat(this, -1)">−</button>
+                            <span class="stat-value">10</span>
+                            <button class="stat-btn" onclick="changeStat(this, 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-name">判断力</span>
+                        <div class="stat-controls">
+                            <button class="stat-btn" onclick="changeStat(this, -1)">−</button>
+                            <span class="stat-value">10</span>
+                            <button class="stat-btn" onclick="changeStat(this, 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-name">魅力</span>
+                        <div class="stat-controls">
+                            <button class="stat-btn" onclick="changeStat(this, -1)">−</button>
+                            <span class="stat-value">10</span>
+                            <button class="stat-btn" onclick="changeStat(this, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- スキル・特質タブ -->
+        <div class="tab-content" id="skills">
+            <div class="panel">
+                <div class="skills-section">
+                    <div class="section-title">スキル:
+                        <button class="header-btn" id="save-skill-book-btn" style="font-size: 12px; padding: 4px 8px; float: right;">追加保存</button>
+                    </div>
+                    <div class="skill-row">
+                        <input type="text" class="skill-name" placeholder="スキル名">
+                        <input type="text" class="skill-dict" placeholder="説明">
+                    </div>
+                    <div class="skill-row">
+                        <input type="text" class="skill-name" placeholder="スキル名">
+                        <input type="text" class="skill-dict" placeholder="説明">
+                    </div>
+                </div>
+
+                <div class="traits-section">
+                    <div class="section-title">特質:
+                        <button class="header-btn" id="save-trait-book-btn" style="font-size: 12px; padding: 4px 8px; float: right;">追加保存</button>
+                    </div>
+                    <div class="trait-row">
+                        <input type="text" class="trait-name" placeholder="特質名">
+                        <input type="text" class="trait-dict" placeholder="説明">
+                    </div>
+                    <div class="trait-row">
+                        <input type="text" class="trait-name" placeholder="特質名">
+                        <input type="text" class="trait-dict" placeholder="説明">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Firebase config from external file (create this file locally) -->
+    <script src="firebase-config.js"></script>
+    <!-- Load progress comments -->
+    <script src="data/progress-comments.js"></script>
+    <script>
+        let remainingPoints = 30;
+
+        // タブ切り替え機能
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // サイドパネル機能
+        function openSidePanel() {
+            document.querySelector('.side-panel').classList.add('open');
+            document.querySelector('.overlay').classList.add('active');
+        }
+
+        function closeSidePanel() {
+            document.querySelector('.side-panel').classList.remove('open');
+            document.querySelector('.overlay').classList.remove('active');
+        }
+
+        // 能力値変更機能
+        function changeStat(button, change) {
+            const statValueEl = button.parentElement.querySelector('.stat-value');
+            let currentValue = parseInt(statValueEl.textContent);
+            if (change > 0 && currentValue < 18 && remainingPoints > 0) {
+                statValueEl.textContent = currentValue + 1;
+                remainingPoints--;
+            } else if (change < 0 && currentValue > 8) {
+                statValueEl.textContent = currentValue - 1;
+                remainingPoints++;
+            }
+            updateRemainingPoints();
+        }
+
+        function updateRemainingPoints() {
+            document.getElementById('header-remaining-points').textContent = remainingPoints;
+            document.querySelector('.points-display').textContent = `残り才能: ${remainingPoints}`;
+        }
+        
+        function resetStats() {
+            document.querySelectorAll('.stat-value').forEach(stat => {
+                stat.textContent = '10';
+            });
+            remainingPoints = 30;
+            updateRemainingPoints();
+        }
+
+        function randomStats() {
+            const stats = document.querySelectorAll('.stat-value');
+            stats.forEach(stat => stat.textContent = '8'); // 最低値に設定
+            let tempPoints = 30 + (stats.length * 2); // 30ポイント + (8-10)*6 = 18
+
+            for (let i = 0; i < tempPoints; i++) {
+                const randomStat = stats[Math.floor(Math.random() * stats.length)];
+                const currentValue = parseInt(randomStat.textContent);
+                if (currentValue < 18) {
+                    randomStat.textContent = currentValue + 1;
+                } else {
+                    i--; // やり直し
+                }
+            }
+            remainingPoints = 0;
+            updateRemainingPoints();
+        }
+
+        // --- Firebase Integration ---
+        let fbApp; // Declare fbApp in a broader scope
+        let db;   // Declare db in a broader scope
+
+        try {
+            // Check if firebaseConfig is loaded
+            if (typeof firebaseConfig === 'undefined') {
+                throw new Error("Firebase config is not loaded. Please create firebase-config.js");
+            }
+
+            // Initialize Firebase
+            const fbApp = firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+            console.log("Firebase initialized successfully.");
+
+            } catch (error) {
+            console.error("Firebase initialization failed:", error);
+            alert("Firebaseの初期化に失敗しました。APIキーが正しく設定されているか確認してください。");
+        }
+
+        // Function to save to Firebase
+        async function saveCharacterDataFirebase() {
+            const characterName = document.querySelector('.name-field').value;
+            const characterDescription = document.querySelector('.description-text').value;
+
+            if (!characterName && !characterDescription) {
+                alert('名前と出自を入力してください。');
+                return;
+            }
+
+            try {
+                const docRef = await db.collection("charactercreate").add({
+                    name: characterName,
+                    description: characterDescription,
+                    createdAt: new Date() // Add a timestamp
+                });
+                console.log("Document written with ID: ", docRef.id);
+                alert('キャラクターをFirebaseに保存しました！');
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                alert('Firebaseへの保存中にエラーが発生しました。コンソールを確認してください。');
+            }
+        }
+
+        // Function to save data locally (file download)
+        function saveCharacterDataLocal() {
+            const characterData = {
+                name: document.querySelector('.name-field').value,
+                gender: document.querySelector('.icon-btn[title="性別"]').textContent,
+                description: document.querySelector('.description-text').value,
+                appearance: document.querySelector('.appearance-text').value,
+                stats: {},
+                skills: [],
+                traits: []
+            };
+
+            document.querySelectorAll('.stat-row').forEach(row => {
+                const name = row.querySelector('.stat-name').textContent;
+                const value = row.querySelector('.stat-value').textContent;
+                characterData.stats[name] = parseInt(value);
+            });
+
+            document.querySelectorAll('.skill-row').forEach(row => {
+                const name = row.querySelector('.skill-name').value;
+                const dict = row.querySelector('.skill-dict').value;
+                if (name) characterData.skills.push({ name, dict });
+            });
+
+            document.querySelectorAll('.trait-row').forEach(row => {
+                const name = row.querySelector('.trait-name').value;
+                const dict = row.querySelector('.trait-dict').value;
+                if (name) characterData.traits.push({ name, dict });
+            });
+
+            const dataStr = JSON.stringify(characterData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'characterData.jsonc';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            alert('キャラクターデータをローカルに保存しました。');
+        }
+
+        function saveSkillBook() {
+            const skills = [];
+            document.querySelectorAll('.skill-row').forEach(row => {
+                const name = row.querySelector('.skill-name').value;
+                const dict = row.querySelector('.skill-dict').value;
+                if (name) skills.push({ name, dict });
+            });
+
+            if (skills.length === 0) {
+                alert('保存するスキルがありません。');
+                return;
+            }
+
+            const dataStr = JSON.stringify(skills, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/jsonc' });
+            const url = URL.createObjectURL(dataBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'skillBook.jsonc';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            alert('スキルブックを保存しました。dataフォルダに保存してください。');
+        }
+
+        function saveTraitBook() {
+            const traits = [];
+            document.querySelectorAll('.trait-row').forEach(row => {
+                const name = row.querySelector('.trait-name').value;
+                const dict = row.querySelector('.trait-dict').value;
+                if (name) traits.push({ name, dict });
+            });
+
+            if (traits.length === 0) {
+                alert('保存する特質がありません。');
+                return;
+            }
+
+            const dataStr = JSON.stringify(traits, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/jsonc' });
+            const url = URL.createObjectURL(dataBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'traitBook.jsonc';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            alert('特質ブックを保存しました。dataフォルダに保存してください。');
+        }
+
+
+        function openBookViewer(title, content) {
+            document.getElementById('book-viewer-title').textContent = title;
+            document.querySelector('.book-viewer-content').textContent = content;
+            document.querySelector('.book-viewer').style.display = 'flex';
+            document.querySelector('.overlay').classList.add('active');
+        }
+
+        function closeBookViewer() {
+            document.querySelector('.book-viewer').style.display = 'none';
+            // Close overlay only if side panel is also closed
+            if (!document.querySelector('.side-panel').classList.contains('open')) {
+                document.querySelector('.overlay').classList.remove('active');
+            }
+        }
+
+
+        // --- イベントリスナー ---
+        document.getElementById('load-skill-book-btn').addEventListener('click', () => document.getElementById('skill-book-input').click());
+        document.getElementById('load-trait-book-btn').addEventListener('click', () => document.getElementById('trait-book-input').click());
+
+        document.getElementById('skill-book-input').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                openBookViewer('スキルブック', e.target.result);
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Reset input
+        });
+
+        document.getElementById('trait-book-input').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                openBookViewer('特質ブック', e.target.result);
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Reset input
+        });
+
+        document.getElementById('save-skill-book-btn').addEventListener('click', saveSkillBook);
+        document.getElementById('save-trait-book-btn').addEventListener('click', saveTraitBook);
+        document.getElementById('reset-button').addEventListener('click', resetStats);
+        document.getElementById('random-btn').addEventListener('click', randomStats);
+        document.getElementById('save-local-btn').addEventListener('click', saveCharacterDataLocal);
+        document.getElementById('save-firebase-btn').addEventListener('click', saveCharacterDataFirebase);
+        
+        document.getElementById('start-life-btn').addEventListener('click', function () {
+            alert('人生を始めます！');
+        });
+
+        document.querySelectorAll('.icon-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                if (this.title === '性別') {
+                    this.textContent = this.textContent === '♂' ? '♀' : '♂';
+                } else {
+                    alert('ランダム生成機能');
+                }
+            });
+        });
+        
+        // 初期化
+        updateRemainingPoints();
+
+        // タッチイベントの最適化
+        document.addEventListener('touchstart', function () { }, { passive: true });
+        document.addEventListener('touchmove', function () { }, { passive: true });
+
+        function setRandomSpeechBubble() {
+            if (typeof progressComments !== 'undefined' && progressComments.length > 0) {
+                const bubble = document.getElementById('speech-bubble-text');
+                const randomIndex = Math.floor(Math.random() * progressComments.length);
+                bubble.textContent = progressComments[randomIndex];
+            }
+        }
+        // Set initial bubble text on page load
+        window.addEventListener('DOMContentLoaded', setRandomSpeechBubble);
+
+        // PWA Service Worker registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>
