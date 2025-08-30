@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
-import { CharacterProvider } from '@/context/CharacterContext'; // Import the provider
+import { CharacterProvider } from '@/context/CharacterContext';
+import { ThemeProvider } from '@/context/ThemeContext'; // Import the ThemeProvider
 
 import Header from '@/components/layout/Header';
 import SidePanel from '@/components/layout/SidePanel';
@@ -12,30 +13,32 @@ import SettingsScreen from '@/AppScreen/10_Settings/SettingsScreen';
 
 function App() {
   return (
-    <BrowserRouter>
-      <CharacterProvider> {/* Wrap the components with the provider */}
-        <Header />
-        <SidePanel />
-        
-        {/* Simple navigation for now */}
-        <nav style={{ position: 'fixed', top: '80px', zIndex: 100, background: 'black', padding: '10px' }}>
-          <Link to="/" style={{ marginRight: '10px' }}>Home</Link>
-          <Link to="/character-creator">Character Creator</Link>
-          {/* Add other links as needed */}
-        </nav>
+    <ThemeProvider> {/* Wrap the entire application with ThemeProvider */}
+      <BrowserRouter>
+        <CharacterProvider>
+          <Header />
+          <SidePanel />
+          
+          {/* Simple navigation for now */}
+          <nav style={{ position: 'fixed', top: '80px', zIndex: 100, background: 'black', padding: '10px' }}>
+            <Link to="/" style={{ marginRight: '10px' }}>Home</Link>
+            <Link to="/character-creator">Character Creator</Link>
+            {/* Add other links as needed */}
+          </nav>
 
-        <div className="container" style={{ paddingTop: '50px' }}>
-          <main>
-            <Routes>
-              <Route path="/" element={<HomeScreen />} />
-              <Route path="/character-creator" element={<CharacterCreatorScreen />} />
-              <Route path="/game-life" element={<GameLifeScreen />} />
-              <Route path="/settings" element={<SettingsScreen />} />
-            </Routes>
-          </main>
-        </div>
-      </CharacterProvider>
-    </BrowserRouter>
+          <div className="container" style={{ paddingTop: '50px' }}>
+            <main>
+              <Routes>
+                <Route path="/" element={<HomeScreen />} />
+                <Route path="/character-creator" element={<CharacterCreatorScreen />} />
+                <Route path="/game-life" element={<GameLifeScreen />} />
+                <Route path="/settings" element={<SettingsScreen />} />
+              </Routes>
+            </main>
+          </div>
+        </CharacterProvider>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 
