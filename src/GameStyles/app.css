@@ -1,512 +1,500 @@
-/* Tailwind directives */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Import variables */
-@import './variables.css';
-
-/* Styles from sampleLayout.html, modified with CSS variables */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
 }
 
 body {
-    font-family: var(--font-family-main);
-    background-color: var(--color-background);
-    color: var(--color-text);
-    min-height: 100vh;
-    overflow-x: hidden;
-    padding-top: 70px; /* ヘッダーの高さ分 */
+   font-family: 'MS Gothic', monospace;
+   background-color: #000;
+   color: #fff;
+   min-height: 100vh;
+   overflow-x: hidden;
+   padding-top: 70px; /* ヘッダーの高さ分 */
 }
 
-/* New Header */
+/* 新しいヘッダー */
 .header-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background-color: var(--color-background-panel);
-    border-bottom: 1px solid var(--color-border);
-    z-index: 100;
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 10px;
+   background-color: #111;
+   border-bottom: 1px solid #666;
+   z-index: 100;
 }
 
 .header-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+   display: flex;
+   align-items: center;
+   gap: 10px;
 }
 
 .character-icon {
-    width: 50px;
-    height: 50px;
-    border: 2px solid var(--color-background);
-    object-fit: cover;
+   width: 50px;
+   height: 50px;
+   border: 2px solid #000;
+   object-fit: cover; /* 画像がコンテナに収まるように調整 */
 }
 
 .speech-bubble {
-    position: relative;
-    background: var(--color-text);
-    color: var(--color-background);
-    border: 2px solid var(--color-background);
-    border-radius: 5px;
-    padding: 8px 12px;
-    font-size: 12px;
+   position: relative;
+   background: #fff;
+   color: #000;
+   border: 2px solid #000;
+   border-radius: 5px;
+   padding: 8px 12px;
+   font-size: 12px;
 }
 
 .speech-bubble:after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: -10px;
-    margin-top: -10px;
-    border-width: 10px 10px 10px 0;
-    border-style: solid;
-    border-color: transparent var(--color-text) transparent transparent;
+   content: '';
+   position: absolute;
+   top: 50%;
+   left: -10px;
+   margin-top: -10px;
+   border-width: 10px 10px 10px 0;
+   border-style: solid;
+   border-color: transparent #fff transparent transparent;
 }
 
 .header-right {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+   display: flex;
+   align-items: center;
+   gap: 15px;
 }
 
 .header-info {
-    font-size: 14px;
+   font-size: 14px;
 }
 
 .header-btn {
-    background-color: var(--color-button);
-    border: 1px solid var(--color-border);
-    color: var(--color-text);
-    padding: 8px 12px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 14px;
+   background-color: #333;
+   border: 1px solid #666;
+   color: #fff;
+   padding: 8px 12px;
+   cursor: pointer;
+   font-family: inherit;
+   font-size: 14px;
 }
+
 .header-btn:hover {
-    background-color: var(--color-button-hover);
+   background-color: #555;
 }
 
-/* Mobile responsive design */
+/* モバイル対応のレスポンシブデザイン */
 .container {
-    max-width: 100%;
-    margin: 0;
-    padding: 10px;
+   max-width: 100%;
+   margin: 0;
+   padding: 10px;
 }
 
-/* Tab navigation */
+/* タブナビゲーション */
 .tab-nav {
-    display: flex;
-    background-color: var(--color-background-panel);
-    border: 1px solid var(--color-border);
-    margin-bottom: 15px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+   display: flex;
+   background-color: #111;
+   border: 1px solid #666;
+   margin-bottom: 15px;
+   overflow-x: auto;
+   -webkit-overflow-scrolling: touch;
 }
 
 .tab-btn {
-    flex: 1;
-    min-width: 80px;
-    background-color: var(--color-button);
-    border: none;
-    border-right: 1px solid var(--color-border);
-    color: var(--color-text);
-    padding: 12px 8px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 12px;
-    white-space: nowrap;
+   flex: 1;
+   min-width: 80px;
+   background-color: #333;
+   border: none;
+   border-right: 1px solid #666;
+   color: #fff;
+   padding: 12px 8px;
+   cursor: pointer;
+   font-family: inherit;
+   font-size: 12px;
+   white-space: nowrap;
 }
 
 .tab-btn:last-child {
-    border-right: none;
+   border-right: none;
 }
 
 .tab-btn.active {
-    background-color: #555; /* var(--color-button-hover) */
+   background-color: #555;
 }
 
 .tab-btn:hover {
-    background-color: #444; /* var(--color-border-alt) */
+   background-color: #444;
 }
 
-/* Tab content */
+/* タブコンテンツ */
 .tab-content {
-    display: none;
-    animation: fadeIn 0.3s ease-in;
+   display: none;
+   animation: fadeIn 0.3s ease-in;
 }
 
 .tab-content.active {
-    display: block;
+   display: block;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+ @keyframes fadeIn {
+   from {
+       opacity: 0;
+   }
+
+   to {
+       opacity: 1;
+   }
 }
 
-/* Common panel style */
+/* 共通パネルスタイル */
 .panel {
-    border: 2px solid var(--color-border);
-    padding: 15px;
-    background-color: var(--color-background-panel);
-    margin-bottom: 15px;
+   border: 2px solid #666;
+   padding: 15px;
+   background-color: #111;
+   margin-bottom: 15px;
 }
 
-/* Basic info tab */
+/* 基本情報タブ */
 .name-section {
-    border: 1px solid var(--color-border);
-    padding: 10px;
-    margin-bottom: 15px;
+   border: 1px solid #666;
+   padding: 10px;
+   margin-bottom: 15px;
 }
 
 .name-input {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   margin-bottom: 10px;
 }
 
 .name-field {
-    background-color: var(--color-background);
-    border: 1px solid var(--color-border);
-    color: var(--color-text);
-    padding: 8px;
-    font-family: inherit;
-    flex: 1;
-    font-size: 16px;
+   background-color: #000;
+   border: 1px solid #666;
+   color: #fff;
+   padding: 8px;
+   font-family: inherit;
+   flex: 1;
+   font-size: 16px;
 }
 
 .icon-buttons {
-    display: flex;
-    gap: 5px;
+   display: flex;
+   gap: 5px;
 }
 
 .icon-btn {
-    background-color: var(--color-button);
-    border: 1px solid var(--color-border);
-    color: var(--color-text);
-    padding: 8px 12px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 14px;
-    min-width: 44px;
-    min-height: 44px;
+   background-color: #333;
+   border: 1px solid #666;
+   color: #fff;
+   padding: 8px 12px;
+   cursor: pointer;
+   font-family: inherit;
+   font-size: 14px;
+   min-width: 44px;
+   min-height: 44px;
 }
 
 .icon-btn:hover {
-    background-color: var(--color-button-hover);
+   background-color: #555;
 }
 
 .description-area,
 .appearance-area {
-    border: 1px solid var(--color-border);
-    padding: 10px;
-    margin-bottom: 15px;
+   border: 1px solid #666;
+   padding: 10px;
+   margin-bottom: 15px;
 }
 
 .description-label {
-    margin-bottom: 8px;
-    font-size: 14px;
-    font-weight: bold;
+   margin-bottom: 8px;
+   font-size: 14px;
+   font-weight: bold;
 }
 
 .description-text,
 .appearance-text {
-    background-color: var(--color-background);
-    border: 1px solid var(--color-border);
-    color: var(--color-text);
-    width: 100%;
-    height: 100px;
-    padding: 8px;
-    font-family: inherit;
-    resize: none;
-    font-size: 14px;
+   background-color: #000;
+   border: 1px solid #666;
+   color: #fff;
+   width: 100%;
+   height: 100px;
+   padding: 8px;
+   font-family: inherit;
+   resize: none;
+   font-size: 14px;
 }
 
 .points-section {
-    border: 1px solid var(--color-border);
-    padding: 15px;
-    text-align: center;
+   border: 1px solid #666;
+   padding: 15px;
+   text-align: center;
 }
 
 .points-display {
-    font-size: 18px;
-    margin-bottom: 15px;
-    font-weight: bold;
+   font-size: 18px;
+   margin-bottom: 15px;
+   font-weight: bold;
 }
 
 .bottom-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    justify-content: center;
+   display: flex;
+   flex-direction: column; /* 縦並びに変更 */
+   gap: 10px;
+   justify-content: center;
 }
 
 .bottom-btn {
-    background-color: var(--color-button);
-    border: 1px solid var(--color-border);
-    color: var(--color-text);
-    padding: 12px 20px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 14px;
-    min-height: 44px;
-    width: 100%;
+   background-color: #333;
+   border: 1px solid #666;
+   color: #fff;
+   padding: 12px 20px;
+   cursor: pointer;
+   font-family: inherit;
+   font-size: 14px;
+   min-height: 44px;
+   width: 100%; /* 幅を100%に */
 }
 
 .bottom-btn:hover {
-    background-color: var(--color-button-hover);
+   background-color: #555;
 }
 
-/* Character display tab */
+/* キャラクター表示タブ */
 .character-display {
-    border: 1px solid var(--color-border);
-    background-color: var(--color-background-alt);
-    min-height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    color: var(--color-text-muted);
-    text-align: center;
-    padding: 20px;
+   border: 1px solid #666;
+   background-color: #222;
+   min-height: 300px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-size: 14px;
+   color: #888;
+   text-align: center;
+   padding: 20px;
 }
 
-/* Stats tab */
+/* 能力値タブ */
 .stats-section {
-    border: 1px solid var(--color-border);
-    padding: 15px;
+   border: 1px solid #666;
+   padding: 15px;
 }
 
 .stat-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-    font-size: 16px;
-    padding: 8px;
-    background-color: var(--color-background-alt);
-    border: 1px solid var(--color-border-alt);
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 12px;
+   font-size: 16px;
+   padding: 8px;
+   background-color: #222;
+   border: 1px solid #444;
 }
 
 .stat-name {
-    flex: 1;
-    font-weight: bold;
+   flex: 1;
+   font-weight: bold;
 }
 
 .stat-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+   display: flex;
+   align-items: center;
+   gap: 10px;
 }
 
 .stat-btn {
-    background-color: var(--color-button);
-    border: 1px solid var(--color-border);
-    color: var(--color-text);
-    width: 44px;
-    height: 44px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 18px;
-    font-weight: bold;
+   background-color: #333;
+   border: 1px solid #666;
+   color: #fff;
+   width: 44px;
+   height: 44px;
+   cursor: pointer;
+   font-family: inherit;
+   font-size: 18px;
+   font-weight: bold;
 }
 
 .stat-btn:hover {
-    background-color: var(--color-button-hover);
+   background-color: #555;
 }
 
 .stat-value {
-    min-width: 40px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
+   min-width: 40px;
+   text-align: center;
+   font-size: 18px;
+   font-weight: bold;
 }
 
-/* Skills & Traits tab */
+/* スキル・特質タブ */
 .skills-section,
 .traits-section {
-    border: 1px solid var(--color-border);
-    padding: 15px;
-    margin-bottom: 20px;
+   border: 1px solid #666;
+   padding: 15px;
+   margin-bottom: 20px;
 }
 
 .section-title {
-    font-size: 16px;
-    margin-bottom: 15px;
-    font-weight: bold;
+   font-size: 16px;
+   margin-bottom: 15px;
+   font-weight: bold;
 }
 
 .skill-row,
 .trait-row {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 15px;
-    padding: 10px;
-    background-color: var(--color-background-alt);
-    border: 1px solid var(--color-border-alt);
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+   margin-bottom: 15px;
+   padding: 10px;
+   background-color: #222;
+   border: 1px solid #444;
 }
 
 .skill-name,
-.trait-name,
-.skill-dict,
-.trait-dict {
-    background-color: var(--color-background);
-    border: 1px solid var(--color-border);
-    color: var(--color-text);
-    padding: 10px;
-    font-family: inherit;
-    font-size: 14px;
+.trait-name {
+   background-color: #000;
+   border: 1px solid #666;
+   color: #fff;
+   padding: 10px;
+   font-family: inherit;
+   font-size: 14px;
 }
 
-/* Side panel */
+.skill-dict,
+.trait-dict {
+   background-color: #000;
+   border: 1px solid #666;
+   color: #fff;
+   padding: 10px;
+   font-family: inherit;
+   font-size: 14px;
+}
+
+/* サイドパネル */
 .side-panel {
-    position: fixed;
-    top: 0;
-    right: -300px;
-    width: 280px;
-    height: 100vh;
-    background-color: var(--color-background-panel);
-    border-left: 2px solid var(--color-border);
-    padding: 20px;
-    transition: right 0.3s ease;
-    z-index: 999;
-    overflow-y: auto;
+   position: fixed;
+   top: 0;
+   right: -300px;
+   width: 280px;
+   height: 100vh;
+   background-color: #111;
+   border-left: 2px solid #666;
+   padding: 20px;
+   transition: right 0.3s ease;
+   z-index: 999;
+   overflow-y: auto;
 }
 
 .side-panel.open {
-    right: 0;
+   right: 0;
 }
 
 .side-panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--color-border);
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 20px;
+   padding-bottom: 10px;
+   border-bottom: 1px solid #666;
 }
 
 .side-panel-close {
-    background-color: var(--color-button);
-    border: 1px solid var(--color-border);
-    color: var(--color-text);
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    font-size: 16px;
+   background-color: #333;
+   border: 1px solid #666;
+   color: #fff;
+   width: 30px;
+   height: 30px;
+   cursor: pointer;
+   font-size: 16px;
 }
 
-/* Overlay */
+/* オーバーレイ */
 .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 998;
-    display: none;
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100vw;
+   height: 100vh;
+   background-color: rgba(0, 0, 0, 0.5);
+   z-index: 998;
+   display: none;
 }
 
 .overlay.active {
-    display: block;
+   display: block;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .header-right { gap: 10px; }
-    .header-btn { padding: 8px; font-size: 12px; }
-    .speech-bubble { display: none; }
+/* レスポンシブ対応 */
+ @media (max-width: 768px) {
+   .header-right {
+       gap: 10px;
+   }
+   .header-btn {
+       padding: 8px;
+       font-size: 12px;
+   }
+   .speech-bubble {
+       display: none; /* 狭い画面では吹き出しを隠す */
+   }
 }
 
-@media (max-width: 480px) {
-    body { padding-top: 60px; }
-    .character-icon { width: 40px; height: 40px; }
-    .header-info { font-size: 12px; }
-    .container { padding: 5px; }
-    .tab-btn { padding: 10px 6px; font-size: 11px; }
-    .panel { padding: 10px; }
+ @media (max-width: 480px) {
+   body {
+       padding-top: 60px;
+   }
+   .character-icon {
+       width: 40px;
+       height: 40px;
+   }
+   .header-info {
+       font-size: 12px;
+   }
+   .container {
+       padding: 5px;
+   }
+
+   .tab-btn {
+       padding: 10px 6px;
+       font-size: 11px;
+   }
+
+   .panel {
+       padding: 10px;
+   }
 }
 
 .book-viewer {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80vw;
-    max-width: 600px;
-    height: 70vh;
-    background-color: var(--color-background-panel);
-    border: 2px solid var(--color-border);
-    z-index: 1001;
-    display: none;
-    flex-direction: column;
+   position: fixed;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   width: 80vw;
+   max-width: 600px;
+   height: 70vh;
+   background-color: #111;
+   border: 2px solid #666;
+   z-index: 1001;
+   display: none; /* Initially hidden */
+   flex-direction: column;
 }
 
 .book-viewer-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid var(--color-border);
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 10px;
+   border-bottom: 1px solid #666;
 }
 
 .book-viewer-content {
-    padding: 15px;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    flex-grow: 1;
-    font-family: inherit;
-    font-size: 14px;
-}
-
-/* Styles from old App.css */
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888; /* var(--color-text-muted) */
+   padding: 15px;
+   overflow-y: auto;
+   white-space: pre-wrap;
+   word-wrap: break-word;
+   flex-grow: 1; 
+   font-family: inherit;
+   font-size: 14px;
 }
