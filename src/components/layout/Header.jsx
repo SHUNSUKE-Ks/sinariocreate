@@ -1,11 +1,13 @@
 import React from 'react';
 import { useCharacter } from '@/hooks/useCharacter';
-import { useTheme } from '@/hooks/useTheme'; // Import useTheme hook
+import { useTheme } from '@/hooks/useTheme';
+import { useCharacterStats } from '@/hooks/useCharacterStats'; // Import useCharacterStats
 import WizardIcon from '@/assets/Wizard_OldMan_Front_Pixel.png';
 
 const Header = () => {
   const { state } = useCharacter();
-  const { theme, toggleTheme } = useTheme(); // Use the theme hook
+  const { theme, toggleTheme } = useTheme();
+  const { resetStats } = useCharacterStats(); // Use resetStats from the hook
 
   return (
     <header className="header-container">
@@ -15,9 +17,9 @@ const Header = () => {
         </div>
         <div className="header-right">
             <div className="header-info">残り才能: <span id="header-remaining-points">{state.talentPoints}</span></div>
-            <button className="header-btn" id="reset-button">リセット</button>
+            <button className="header-btn" id="reset-button" onClick={resetStats}>リセット</button> {/* Connect resetStats */}
             <button className="header-btn" onClick={toggleTheme}>
-              {theme === 'light' ? 'ダークモード' : 'ライトモード'} {/* Toggle button */}
+              {theme === 'light' ? 'ダークモード' : 'ライトモード'}
             </button>
             <button className="header-btn">メニュー</button>
         </div>

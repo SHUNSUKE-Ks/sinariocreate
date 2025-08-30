@@ -52,6 +52,13 @@ export const characterReducer = (state, action) => {
         },
       };
 
+    case 'RESET_STATS':
+      return { ...state, stats: action.payload };
+    case 'RANDOMIZE_STATS':
+      return { ...state, stats: action.payload };
+    case 'SET_TALENT_POINTS':
+      return { ...state, talentPoints: action.payload };
+
     default:
       return state;
   }
