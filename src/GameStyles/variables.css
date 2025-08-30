@@ -1,6 +1,6 @@
 :root {
   /* Light Theme Defaults */
-  --color-background: #f0f0f0; /* Light gray */
+  --color-background: #000; /* Light gray */
   --color-background-panel: #ffffff; /* White */
   --color-background-alt: #e0e0e0; /* Lighter gray */
   --color-button: #007bff; /* Blue */
@@ -9,10 +9,10 @@
   --color-border-alt: #bbbbbb; /* Lighter gray border */
   --color-text: #333333; /* Dark gray text */
   --color-text-muted: #666666; /* Medium gray text */
-  --font-family-main: 'MS Gothic', monospace;
+  --font-family-main: "MS Gothic", monospace;
 }
 
-html[data-theme='dark'] {
+html[data-theme="dark"] {
   /* Dark Theme Overrides */
   --color-background: #000;
   --color-background-panel: #111;
