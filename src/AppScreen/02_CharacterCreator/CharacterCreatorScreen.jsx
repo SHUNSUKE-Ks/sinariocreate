@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import TabNavigation from '@/components/nav/TabNavigation';
+import TabNavigation from './TabNavigation';
 import BasicInfoTab from './CharacterTabs/BasicInfoTab';
 import VisualTab from './CharacterTabs/VisualTab';
 import StatsTab from './CharacterTabs/StatsTab';
@@ -7,6 +7,13 @@ import SkillsTab from './CharacterTabs/SkillsTab';
 
 const CharacterCreatorScreen = () => {
   const [activeTab, setActiveTab] = useState('basic');
+
+  const characterTabs = [
+    { name: '基本', id: 'basic' },
+    { name: '外見', id: 'visual' },
+    { name: '能力値', id: 'stats' },
+    { name: '技能', id: 'skills' },
+  ];
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -25,7 +32,7 @@ const CharacterCreatorScreen = () => {
 
   return (
     <div>
-      <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+      <TabNavigation tabs={characterTabs} activeTab={activeTab} setActiveTab={setActiveTab} />
       <div className="tab-contents">
         {renderTabContent()}
       </div>

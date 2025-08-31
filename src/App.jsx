@@ -3,17 +3,22 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
 import { CharacterProvider } from '@/context/CharacterContext';
 import { ThemeProvider } from '@/context/ThemeContext';
-import { useSidePanel } from '@/hooks/useSidePanel'; // Import useSidePanel
+import { useSidePanel } from '@/hooks/useSidePanel';
 
 import Header from '@/components/layout/Header';
 import SidePanel from '@/components/layout/SidePanel';
 import HomeScreen from '@/AppScreen/01_Home/HomeScreen';
 import CharacterCreatorScreen from '@/AppScreen/02_CharacterCreator/CharacterCreatorScreen';
-import GameLifeScreen from '@/AppScreen/03_GameLife/GameLifeScreen';
+
+import ItemListScreen from '@/AppScreen/04_ItemList/ItemListScreen';
+import SkillListScreen from '@/AppScreen/05_SkillList/SkillListScreen';
+import StoryScreen from '@/AppScreen/06_Story/StoryScreen';
+import LibraryScreen from '@/AppScreen/07_Library/LibraryScreen';
+
 import SettingsScreen from '@/AppScreen/10_Settings/SettingsScreen';
 
 function App() {
-  const { isOpen, toggleSidePanel } = useSidePanel(); // Use the hook
+  const { isOpen, toggleSidePanel } = useSidePanel();
 
   return (
     <ThemeProvider>
@@ -22,23 +27,30 @@ function App() {
           {/* Overlay for side panel */}
           <div className={`overlay ${isOpen ? 'active' : ''}`} onClick={toggleSidePanel}></div>
 
-          <Header toggleSidePanel={toggleSidePanel} /> {/* Pass toggle function */}
-          <SidePanel isOpen={isOpen} toggleSidePanel={toggleSidePanel} /> {/* Pass state and toggle function */}
+          <Header toggleSidePanel={toggleSidePanel} />
+          <SidePanel isOpen={isOpen} toggleSidePanel={toggleSidePanel} />
           
-          {/* Simple navigation for now */}
-          <nav style={{ position: 'fixed', top: '80px', zIndex: 100, background: 'black', padding: '10px' }}>
-            <Link to="/" style={{ marginRight: '10px' }}>Home</Link>
-            <Link to="/character-creator">Character Creator</Link>
-            <Link to="/game-life" style={{ marginLeft: '10px' }}>Game Life</Link>
-            <Link to="/settings" style={{ marginLeft: '10px' }}>Settings</Link>
+          {/* Main navigation tabs */}
+          <nav style={{ position: 'fixed', top: '80px', zIndex: 100, background: 'black', padding: '10px', width: '100%', display: 'flex', justifyContent: 'space-around' }}>
+            <Link to="/" style={{ color: 'white', textDecoration: 'none', padding: '5px 10px' }}>Home</Link>
+            <Link to="/character-creator" style={{ color: 'white', textDecoration: 'none', padding: '5px 10px' }}>CharacterCreate</Link>
+            
+            <Link to="/item-list" style={{ color: 'white', textDecoration: 'none', padding: '5px 10px' }}>Item</Link>
+            <Link to="/skill-list" style={{ color: 'white', textDecoration: 'none', padding: '5px 10px' }}>Skill</Link>
+            <Link to="/story" style={{ color: 'white', textDecoration: 'none', padding: '5px 10px' }}>Story</Link>
+            <Link to="/library" style={{ color: 'white', textDecoration: 'none', padding: '5px 10px' }}>Library</Link>
           </nav>
 
-          <div className="container" style={{ paddingTop: '50px' }}>
+          <div className="container" style={{ paddingTop: '130px' }}> {/* Adjust padding-top for the new nav */}
             <main>
               <Routes>
                 <Route path="/" element={<HomeScreen />} />
                 <Route path="/character-creator" element={<CharacterCreatorScreen />} />
-                <Route path="/game-life" element={<GameLifeScreen />} />
+                
+                <Route path="/item-list" element={<ItemListScreen />} />
+                <Route path="/skill-list" element={<SkillListScreen />} />
+                <Route path="/story" element={<StoryScreen />} />
+                <Route path="/library" element={<LibraryScreen />} />
                 <Route path="/settings" element={<SettingsScreen />} />
               </Routes>
             </main>

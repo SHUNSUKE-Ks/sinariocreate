@@ -1,11 +1,137 @@
+▼ フォルダー構造※アプリに最適化したい場合は提案してください 00*doc\small-app*フォルダー構成\_Ver2.5.md ▼ アプリの仕様 00_doc\REACT_MIGRATION_PLAN.md ▼ アプリ固有のレイアウト 00_doc\sampleLayout.html
 
-▼フォルダー構造※アプリに最適化したい場合は提案してください
-00_doc\small-app_フォルダー構成_Ver2.5.md
-▼アプリの仕様
-00_doc\REACT_MIGRATION_PLAN.md
-▼アプリ固有のレイアウト
-00_doc\sampleLayout.html
+第一テストレイアウト表示
 
+1.アプリの固有フォルダー構造の作成 → フォルダー構造.md
 
-第一テスト
-レイアウト表示
+使用変更：
+
+追加仕様：０８２９＿メモ帳
+
+適用させることに成功しました。レイアウトではなくほかの設定が齟齬があるので CSS を作り直します。１．削除 ・ダークモード機能を削除 → 全てバックグラウンドを黒にする ・現在の CSS ファイルを削除報告
+
+２．新たに共通 CSS を作成
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { font-family: 'MS Gothic', monospace; background-color: #000; color: #fff; min-height: 100vh; overflow-x: hidden; padding-top: 70px; /_ ヘッダーの高さ分 _/ }
+
+/_ 新しいヘッダー _/ .header-container { position: fixed; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 10px; background-color: #111; border-bottom: 1px solid #666; z-index: 100; }
+
+.header-left { display: flex; align-items: center; gap: 10px; }
+
+.character-icon { width: 50px; height: 50px; border: 2px solid #000; object-fit: cover; /_ 画像がコンテナに収まるように調整 _/ }
+
+.speech-bubble { position: relative; background: #fff; color: #000; border: 2px solid #000; border-radius: 5px; padding: 8px 12px; font-size: 12px; }
+
+.speech-bubble:after { content: ''; position: absolute; top: 50%; left: -10px; margin-top: -10px; border-width: 10px 10px 10px 0; border-style: solid; border-color: transparent #fff transparent transparent; }
+
+.header-right { display: flex; align-items: center; gap: 15px; }
+
+.header-info { font-size: 14px; }
+
+.header-btn { background-color: #333; border: 1px solid #666; color: #fff; padding: 8px 12px; cursor: pointer; font-family: inherit; font-size: 14px; }
+
+.header-btn:hover { background-color: #555; }
+
+/_ モバイル対応のレスポンシブデザイン _/ .container { max-width: 100%; margin: 0; padding: 10px; }
+
+/_ タブナビゲーション _/ .tab-nav { display: flex; background-color: #111; border: 1px solid #666; margin-bottom: 15px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+.tab-btn { flex: 1; min-width: 80px; background-color: #333; border: none; border-right: 1px solid #666; color: #fff; padding: 12px 8px; cursor: pointer; font-family: inherit; font-size: 12px; white-space: nowrap; }
+
+.tab-btn:last-child { border-right: none; }
+
+.tab-btn.active { background-color: #555; }
+
+.tab-btn:hover { background-color: #444; }
+
+/_ タブコンテンツ _/ .tab-content { display: none; animation: fadeIn 0.3s ease-in; }
+
+.tab-content.active { display: block; }
+
+@keyframes fadeIn { from { opacity: 0; }
+
+to { opacity: 1; } }
+
+/_ 共通パネルスタイル _/ .panel { border: 2px solid #666; padding: 15px; background-color: #111; margin-bottom: 15px; }
+
+/_ 基本情報タブ _/ .name-section { border: 1px solid #666; padding: 10px; margin-bottom: 15px; }
+
+.name-input { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+
+.name-field { background-color: #000; border: 1px solid #666; color: #fff; padding: 8px; font-family: inherit; flex: 1; font-size: 16px; }
+
+.icon-buttons { display: flex; gap: 5px; }
+
+.icon-btn { background-color: #333; border: 1px solid #666; color: #fff; padding: 8px 12px; cursor: pointer; font-family: inherit; font-size: 14px; min-width: 44px; min-height: 44px; }
+
+.icon-btn:hover { background-color: #555; }
+
+.description-area, .appearance-area { border: 1px solid #666; padding: 10px; margin-bottom: 15px; }
+
+.description-label { margin-bottom: 8px; font-size: 14px; font-weight: bold; }
+
+.description-text, .appearance-text { background-color: #000; border: 1px solid #666; color: #fff; width: 100%; height: 100px; padding: 8px; font-family: inherit; resize: none; font-size: 14px; }
+
+.points-section { border: 1px solid #666; padding: 15px; text-align: center; }
+
+.points-display { font-size: 18px; margin-bottom: 15px; font-weight: bold; }
+
+.bottom-buttons { display: flex; flex-direction: column; /_ 縦並びに変更 _/ gap: 10px; justify-content: center; }
+
+.bottom-btn { background-color: #333; border: 1px solid #666; color: #fff; padding: 12px 20px; cursor: pointer; font-family: inherit; font-size: 14px; min-height: 44px; width: 100%; /_ 幅を 100%に _/ }
+
+.bottom-btn:hover { background-color: #555; }
+
+/_ キャラクター表示タブ _/ .character-display { border: 1px solid #666; background-color: #222; min-height: 300px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #888; text-align: center; padding: 20px; }
+
+/_ 能力値タブ _/ .stats-section { border: 1px solid #666; padding: 15px; }
+
+.stat-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 16px; padding: 8px; background-color: #222; border: 1px solid #444; }
+
+.stat-name { flex: 1; font-weight: bold; }
+
+.stat-controls { display: flex; align-items: center; gap: 10px; }
+
+.stat-btn { background-color: #333; border: 1px solid #666; color: #fff; width: 44px; height: 44px; cursor: pointer; font-family: inherit; font-size: 18px; font-weight: bold; }
+
+.stat-btn:hover { background-color: #555; }
+
+.stat-value { min-width: 40px; text-align: center; font-size: 18px; font-weight: bold; }
+
+/_ スキル・特質タブ _/ .skills-section, .traits-section { border: 1px solid #666; padding: 15px; margin-bottom: 20px; }
+
+.section-title { font-size: 16px; margin-bottom: 15px; font-weight: bold; }
+
+.skill-row, .trait-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; padding: 10px; background-color: #222; border: 1px solid #444; }
+
+.skill-name, .trait-name { background-color: #000; border: 1px solid #666; color: #fff; padding: 10px; font-family: inherit; font-size: 14px; }
+
+.skill-dict, .trait-dict { background-color: #000; border: 1px solid #666; color: #fff; padding: 10px; font-family: inherit; font-size: 14px; }
+
+/_ サイドパネル _/ .side-panel { position: fixed; top: 0; right: -300px; width: 280px; height: 100vh; background-color: #111; border-left: 2px solid #666; padding: 20px; transition: right 0.3s ease; z-index: 999; overflow-y: auto; }
+
+.side-panel.open { right: 0; }
+
+.side-panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #666; }
+
+.side-panel-close { background-color: #333; border: 1px solid #666; color: #fff; width: 30px; height: 30px; cursor: pointer; font-size: 16px; }
+
+/_ オーバーレイ _/ .overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.5); z-index: 998; display: none; }
+
+.overlay.active { display: block; }
+
+/_ レスポンシブ対応 _/ @media (max-width: 768px) { .header-right { gap: 10px; } .header-btn { padding: 8px; font-size: 12px; } .speech-bubble { display: none; /_ 狭い画面では吹き出しを隠す _/ } }
+
+@media (max-width: 480px) { body { padding-top: 60px; } .character-icon { width: 40px; height: 40px; } .header-info { font-size: 12px; } .container { padding: 5px; }
+
+.tab-btn { padding: 10px 6px; font-size: 11px; }
+
+.panel { padding: 10px; } }
+
+.book-viewer { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80vw; max-width: 600px; height: 70vh; background-color: #111; border: 2px solid #666; z-index: 1001; display: none; /_ Initially hidden _/ flex-direction: column; }
+
+.book-viewer-header { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #666; }
+
+.book-viewer-content { padding: 15px; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word; flex-grow: 1; font-family: inherit; font-size: 14px; }
