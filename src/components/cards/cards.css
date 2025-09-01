@@ -9,6 +9,7 @@
 /* Text dialog card */
 .text-dialog-card {
   width: min(520px, 90vw);
+  aspect-ratio: 3 / 4;
   padding: 14px 16px 18px 16px;
   color: #332d25;
   position: relative;
@@ -41,7 +42,7 @@
 /* Character image card */
 .character-image-card {
   width: min(420px, 70vw);
-  aspect-ratio: 3 / 4.4; /* portrait-like */
+  aspect-ratio: 3 / 4;
   padding: 10px;
   display: grid;
   place-items: center;
