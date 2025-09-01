@@ -1,9 +1,20 @@
 import React from 'react';
 import { TextDaialogCard, CharacterImagecard } from '@/components/cards';
-import WizardIcon from '@/assets/Wizard_OldMan_Front_Pixel.png'; // ダミー画像
+import useCharacterImage from '@/hooks/useCharacterImage';
 
 const TalkScreen = () => {
+  const { getCharacterImagePath, loading, error } = useCharacterImage();
   const text = `しかし、女には「太陽って何？」と聞き返されてしまう.\n何やら、本当に太陽を知らない様子だが……`;
+
+  if (loading) {
+    return <div>画像を読み込み中...</div>;
+  }
+
+  if (error) {
+    return <div>画像の読み込みに失敗しました: {error.message}</div>;
+  }
+
+  const characterImagePath = getCharacterImagePath('chara_paper_master');
 
   return (
     <div className="scene">
@@ -11,7 +22,11 @@ const TalkScreen = () => {
         <TextDaialogCard name="村人・悩める女" text={text} />
       </div>
       <div className="imageCard">
-        <CharacterImagecard imageSrc={WizardIcon} alt="キャラクター" />
+        {characterImagePath ? (
+          <CharacterImagecard imageSrc={characterImagePath} alt="キャラクター" />
+        ) : (
+          <div className="character-image-card placeholder">画像なし</div>
+        )}
       </div>
 
       <style jsx>{`
@@ -46,3 +61,4 @@ const TalkScreen = () => {
 };
 
 export default TalkScreen;
+
