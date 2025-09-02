@@ -23,3 +23,7 @@ EntrySheet」を用意して、画像を一元管理する仕組みを作れば 
 同じキャラを複数章で使う場合でも、画像のパスを 1 か所で管理。
 
 差し替えや修正もこのファイルだけで OK。
+
+１．画像納品後のファイルパスを記入できるか？ src\assets\characterImageList にキャラクター画像を納品しました。src\data\EntrySheet\Entry_CharacterImage.jsonc にパスを通して登録してください。
+
+２．エントリーシートのパスをシナリオ Json に反映する src\data\EntrySheet\Entry_CharacterImage.jsonc に登録した画像のキーを src\data\sinario01.jsonc に反映させて

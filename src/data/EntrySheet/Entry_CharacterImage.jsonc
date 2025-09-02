@@ -1,10 +1,7 @@
 {
-  // ─────────────── // 納品済みキャラ画像 // ───────────────
   "chara_paper_master": "src/assets/Wizard_OldMan_Front_Pixel.png",
-
-  // ─────────────── // 未納品キャラ（発注中） // ───────────────
-  "chara_hunter": "発注中",
-  "chara_merchant": "発注中",
-  "chara_miner": "発注中",
-  "chara_blacksmith": "発注中"
+  "chara_hunter": "src/assets/characterImageList/chara_hunter.png",
+  "chara_merchant": "src/assets/characterImageList/chara_merchant.png",
+  "chara_miner": "src/assets/characterImageList/chara_miner.png",
+  "chara_blacksmith": "src/assets/characterImageList/chara_blacksmith.png"
 }
