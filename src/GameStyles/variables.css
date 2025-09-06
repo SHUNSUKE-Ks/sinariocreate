@@ -1,0 +1,26 @@
+:root {
+  /* Light Theme Defaults */
+  --color-background: #f0f0f0; /* Light gray */
+  --color-background-panel: #ffffff; /* White */
+  --color-background-alt: #e0e0e0; /* Lighter gray */
+  --color-button: #007bff; /* Blue */
+  --color-button-hover: #0056b3; /* Darker blue */
+  --color-border: #cccccc; /* Light gray border */
+  --color-border-alt: #bbbbbb; /* Lighter gray border */
+  --color-text: #333333; /* Dark gray text */
+  --color-text-muted: #666666; /* Medium gray text */
+  --font-family-main: "MS Gothic", monospace;
+}
+
+html[data-theme="dark"] {
+  /* Dark Theme Overrides */
+  --color-background: #000;
+  --color-background-panel: #111;
+  --color-background-alt: #222;
+  --color-button: #333;
+  --color-button-hover: #555;
+  --color-border: #666;
+  --color-border-alt: #444;
+  --color-text: #fff;
+  --color-text-muted: #888;
+}

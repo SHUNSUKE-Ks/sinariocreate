@@ -35,3 +35,9 @@ chapter01{ sinarioID:num characterImage spaeker:characterName text: //20 文字�
 data>EntrySheet ※画像を登録して使いやすくする ※画像の発注書としても使用する Entry_CharacterImage.jsonc { chara_paper_master:"src/assets/characterImageList/chara_paper_master.png" }
 
 Entry_UI.jsonc
+
+src\AppScreen ＞ 00_Manager
+
+AppManager//画面遷移 CardContllerManager//カードコンポーネントのポジション管理、状態管理、
+
+01_doc\Firebase_Integration_Manual.md を参照してファイヤーベースを実装してください .env=C:\Users\enjoy\React_AppLists\sinariocreate_ver2.1\.env

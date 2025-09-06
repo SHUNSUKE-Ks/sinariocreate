@@ -27,3 +27,12 @@ EntrySheet」を用意して、画像を一元管理する仕組みを作れば 
 １．画像納品後のファイルパスを記入できるか？ src\assets\characterImageList にキャラクター画像を納品しました。src\data\EntrySheet\Entry_CharacterImage.jsonc にパスを通して登録してください。
 
 ２．エントリーシートのパスをシナリオ Json に反映する src\data\EntrySheet\Entry_CharacterImage.jsonc に登録した画像のキーを src\data\sinario01.jsonc に反映させて
+
+３．sinario01 を src\AppScreen\06_Story\TalkScreen.jsx に反映させるボタン作成、画面の下に配置：sinarioID を＋１、－１するボタンを作成して実装する
+
+4.src\AppScreen に 00_Manager を追加//プロジェクトの Manager をまとめるフォルダー CardContllerManager.jsx=カード Component のポジション管理｛ src\AppScreen\06_Story\TalkScreen.jsx のカードコンポーネントのコントロールをする。
+
+｝ AppManager.jsx= 画面遷移管理
+
+## TODO
+- [x] src/AppScreenに00_Managerを追加し、CardControllerManager.jsxとAppManager.jsxを作成

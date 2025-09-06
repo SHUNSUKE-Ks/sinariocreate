@@ -1,0 +1,27 @@
+.tile-canvas {
+  image-rendering: pixelated;
+}
+
+.battle-wrap {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100dvh;
+}
+
+.grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.title-center {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+}
+
+.result-panel {
+  max-width: 560px;
+  margin-inline: auto;
+}
+

@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { CharacterProvider } from '@/context/CharacterContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { useSidePanel } from '@/hooks/useSidePanel';
+import '@/GameStyles/trialrogue.css';
 
 import Header from '@/components/layout/Header';
 import SidePanel from '@/components/layout/SidePanel';
@@ -16,6 +17,11 @@ import StoryScreen from '@/AppScreen/06_Story/StoryScreen';
 import LibraryScreen from '@/AppScreen/07_Library/LibraryScreen';
 
 import SettingsScreen from '@/AppScreen/10_Settings/SettingsScreen';
+import MapPreview from '@/GameCollections/TrialRogue/generateMap/preview/MapPreview.jsx';
+import TitleScreen from '@/GameCollections/TrialRogue/screens/TitleScreen.jsx';
+import StageSelectScreen from '@/GameCollections/TrialRogue/screens/StageSelectScreen.jsx';
+import LoadingScreen from '@/GameCollections/TrialRogue/screens/LoadingScreen.jsx';
+import BattleScreen from '@/GameCollections/TrialRogue/screens/BattleScreen.jsx';
 
 function App() {
   const { isOpen, toggleSidePanel } = useSidePanel();
@@ -39,6 +45,7 @@ function App() {
             <Link to="/skill-list" style={{ color: 'white', textDecoration: 'none', padding: '5px 10px' }}>Skill</Link>
             <Link to="/story" style={{ color: 'white', textDecoration: 'none', padding: '5px 10px' }}>Story</Link>
             <Link to="/library" style={{ color: 'white', textDecoration: 'none', padding: '5px 10px' }}>Library</Link>
+            <Link to="/trialrogue-preview" style={{ color: 'white', textDecoration: 'none', padding: '5px 10px' }}>TR Map Preview</Link>
           </nav>
 
           <div className="container" style={{ paddingTop: '130px' }}> {/* Adjust padding-top for the new nav */}
@@ -52,6 +59,11 @@ function App() {
                 <Route path="/story" element={<StoryScreen />} />
                 <Route path="/library" element={<LibraryScreen />} />
                 <Route path="/settings" element={<SettingsScreen />} />
+                <Route path="/trialrogue/title" element={<TitleScreen />} />
+                <Route path="/trialrogue/stage-select" element={<StageSelectScreen />} />
+                <Route path="/trialrogue/loading" element={<LoadingScreen />} />
+                <Route path="/trialrogue/battle" element={<BattleScreen />} />
+                <Route path="/trialrogue-preview" element={<MapPreview />} />
               </Routes>
             </main>
           </div>

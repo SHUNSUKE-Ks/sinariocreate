@@ -1,0 +1,183 @@
+{
+  "meta": {
+    "name": "CombatKeymap",
+    "version": "1.0.0",
+    "updated": "2025-09-06",
+    "description": "ローグライク戦闘用の操作→アクション定義（PC/Android/ゲームパッド対応）"
+  },
+
+  // ─────────────────────────────────────
+  // 1) アクション定義（UIやロジックの“共通言語”）
+  // ─────────────────────────────────────
+  "actions": [
+    // 移動/待機（隣接敵へ移動＝近接攻撃として解決する想定）
+    { "id": "move.n", "name": "上へ移動", "cat": "move", "payload": { "dx": 0, "dy": -1 } },
+    { "id": "move.s", "name": "下へ移動", "cat": "move", "payload": { "dx": 0, "dy": 1 } },
+    { "id": "move.w", "name": "左へ移動", "cat": "move", "payload": { "dx": -1, "dy": 0 } },
+    { "id": "move.e", "name": "右へ移動", "cat": "move", "payload": { "dx": 1, "dy": 0 } },
+    { "id": "move.nw", "name": "左上へ移動", "cat": "move", "payload": { "dx": -1, "dy": -1 } },
+    { "id": "move.ne", "name": "右上へ移動", "cat": "move", "payload": { "dx": 1, "dy": -1 } },
+    { "id": "move.sw", "name": "左下へ移動", "cat": "move", "payload": { "dx": -1, "dy": 1 } },
+    { "id": "move.se", "name": "右下へ移動", "cat": "move", "payload": { "dx": 1, "dy": 1 } },
+    { "id": "wait", "name": "待機（1ターン経過）", "cat": "move" },
+
+    // 明示的な攻撃/照準（移動とは別に“方向指定攻撃”や“射撃”を行いたい場合）
+    { "id": "combat.attack.melee", "name": "近接攻撃", "cat": "combat", "payload": { "dir": null } }, // dir: n/s/e/w/nw/ne/sw/se
+    { "id": "combat.attack.ranged", "name": "射撃/投擲照準", "cat": "combat" },
+    { "id": "mode.target.toggle", "name": "ターゲットモード切替", "cat": "mode" },
+    { "id": "target.next", "name": "次のターゲット", "cat": "mode" },
+    { "id": "target.prev", "name": "前のターゲット", "cat": "mode" },
+
+    // アイテム
+    { "id": "inventory.open", "name": "インベントリを開く", "cat": "inventory" },
+    { "id": "item.use", "name": "アイテムを使う", "cat": "inventory", "payload": { "slot": null } },
+    { "id": "item.throw", "name": "アイテムを投げる", "cat": "inventory", "payload": { "slot": null } },
+    { "id": "item.equip", "name": "装備する", "cat": "inventory", "payload": { "slot": null } },
+    { "id": "item.drop", "name": "捨てる", "cat": "inventory", "payload": { "slot": null } },
+    { "id": "quick.heal", "name": "クイック回復", "cat": "inventory" },
+    { "id": "quick.eat", "name": "クイック食事", "cat": "inventory" },
+
+    // マップ/環境
+    { "id": "interact.pick", "name": "拾う/その場の取得", "cat": "world" },
+    { "id": "interact.stairs", "name": "階段で移動", "cat": "world" },
+    { "id": "mode.look.toggle", "name": "見渡すモード切替", "cat": "mode" },
+
+    // UI/ログ
+    { "id": "ui.confirm", "name": "決定/OK", "cat": "ui" },
+    { "id": "ui.cancel", "name": "キャンセル", "cat": "ui" },
+    { "id": "log.prev", "name": "ログ↑", "cat": "ui" },
+    { "id": "log.next", "name": "ログ↓", "cat": "ui" }
+  ],
+
+  // ─────────────────────────────────────
+  // 2) プロファイル別バインド（PC/Android/Pad）
+  // ─────────────────────────────────────
+  "profiles": {
+    "PC_Default": {
+      "notes": "JIS配列想定。移動は矢印/WASD、斜めはQEZC/テンキー。待機は '.' または Num5。",
+      "keyboard": [
+        // 移動
+        { "keys": ["ArrowUp"], "action": "move.n" },
+        { "keys": ["ArrowDown"], "action": "move.s" },
+        { "keys": ["ArrowLeft"], "action": "move.w" },
+        { "keys": ["ArrowRight"], "action": "move.e" },
+        { "keys": ["KeyQ"], "action": "move.nw" },
+        { "keys": ["KeyE"], "action": "move.ne" },
+        { "keys": ["KeyZ"], "action": "move.sw" },
+        { "keys": ["KeyC"], "action": "move.se" },
+        { "keys": ["Numpad8"], "action": "move.n" },
+        { "keys": ["Numpad2"], "action": "move.s" },
+        { "keys": ["Numpad4"], "action": "move.w" },
+        { "keys": ["Numpad6"], "action": "move.e" },
+        { "keys": ["Numpad7"], "action": "move.nw" },
+        { "keys": ["Numpad9"], "action": "move.ne" },
+        { "keys": ["Numpad1"], "action": "move.sw" },
+        { "keys": ["Numpad3"], "action": "move.se" },
+
+        // 待機/攻撃
+        { "keys": ["Period"], "action": "wait" }, // '.'
+        { "keys": ["Numpad5"], "action": "wait" },
+        { "keys": ["KeyF"], "action": "combat.attack.melee" }, // 方向指定は直後の矢印入力でdir付与
+        { "keys": ["KeyR"], "action": "combat.attack.ranged" },
+        { "keys": ["KeyT"], "action": "mode.target.toggle" },
+        { "keys": ["BracketRight"], "action": "target.next" },
+        { "keys": ["BracketLeft"], "action": "target.prev" },
+
+        // アイテム/装備
+        { "keys": ["KeyI"], "action": "inventory.open" },
+        { "keys": ["KeyG"], "action": "interact.pick" },
+        { "keys": ["KeyU"], "action": "item.use" }, // フォーカス中スロットを使用
+        { "keys": ["KeyV"], "action": "item.throw" },
+        { "keys": ["KeyE"], "action": "item.equip" }, // ※Eは斜めと衝突 → 片方オフ可
+        { "keys": ["Backspace"], "action": "item.drop" },
+        { "keys": ["Digit1"], "action": "item.use", "payload": { "slot": 1 } }, // クイックバー1-4
+        { "keys": ["Digit2"], "action": "item.use", "payload": { "slot": 2 } },
+        { "keys": ["Digit3"], "action": "item.use", "payload": { "slot": 3 } },
+        { "keys": ["Digit4"], "action": "item.use", "payload": { "slot": 4 } },
+        { "keys": ["KeyH"], "action": "quick.heal" },
+        { "keys": ["KeyB"], "action": "quick.eat" },
+
+        // 環境
+        { "keys": ["Comma", "Shift"], "action": "interact.stairs" }, // '<'（上/下どちらも“階段で移動”として統一）
+        { "keys": ["Period", "Shift"], "action": "interact.stairs" }, // '>' 同上
+        { "keys": ["KeyX"], "action": "mode.look.toggle" },
+
+        // UI/ログ
+        { "keys": ["Enter"], "action": "ui.confirm" },
+        { "keys": ["Escape"], "action": "ui.cancel" },
+        { "keys": ["PageUp"], "action": "log.prev" },
+        { "keys": ["PageDown"], "action": "log.next" },
+
+        // 日本語配列の代替（任意）：無変換＋数字でクイックバー
+        { "keys": ["NonConvert", "Digit1"], "action": "item.use", "payload": { "slot": 1 } },
+        { "keys": ["NonConvert", "Digit2"], "action": "item.use", "payload": { "slot": 2 } }
+      ],
+      "options": {
+        "diagonalEnabled": true,
+        "keyRepeat": { "delayMs": 200, "intervalMs": 80 } // 長押しのオートリピート（移動のみ適用推奨）
+      }
+    },
+
+    "Android_Default": {
+      "notes": "スワイプ移動/タップ攻撃/長押し見渡し。仮想ボタンはUIで表示。",
+      "touchmap": [
+        { "gesture": "swipe", "dir": "n", "action": "move.n" },
+        { "gesture": "swipe", "dir": "s", "action": "move.s" },
+        { "gesture": "swipe", "dir": "w", "action": "move.w" },
+        { "gesture": "swipe", "dir": "e", "action": "move.e" },
+        { "gesture": "swipe", "dir": "nw", "action": "move.nw" },
+        { "gesture": "swipe", "dir": "ne", "action": "move.ne" },
+        { "gesture": "swipe", "dir": "sw", "action": "move.sw" },
+        { "gesture": "swipe", "dir": "se", "action": "move.se" },
+        { "gesture": "doubleTapSelf", "action": "wait" },
+        { "gesture": "tapEnemyAdj", "action": "combat.attack.melee" },
+        { "gesture": "longPress", "action": "mode.look.toggle" }
+      ],
+      "virtualButtons": [
+        { "id": "btnInventory", "label": "バッグ", "action": "inventory.open" },
+        { "id": "btnPick", "label": "拾う", "action": "interact.pick" },
+        { "id": "btnHeal", "label": "回復", "action": "quick.heal" },
+        { "id": "btnEat", "label": "食事", "action": "quick.eat" },
+        { "id": "btnThrow", "label": "投げ", "action": "item.throw" },
+        { "id": "btnStairs", "label": "階段", "action": "interact.stairs" },
+        { "id": "btnTarget", "label": "照準", "action": "mode.target.toggle" }
+      ],
+      "options": {
+        "diagonalEnabled": true,
+        "swipeDeadzonePx": 18, // スワイプ判定の最低距離
+        "longPressMs": 420
+      }
+    },
+
+    "Gamepad_Default": {
+      "notes": "Android/PCのBTパッド。XInput想定。",
+      "gamepad": [
+        { "btn": "DPAD_UP", "action": "move.n" },
+        { "btn": "DPAD_DOWN", "action": "move.s" },
+        { "btn": "DPAD_LEFT", "action": "move.w" },
+        { "btn": "DPAD_RIGHT", "action": "move.e" },
+        { "btn": "L_STICK_DIR", "action": "move.*" }, // 方向に応じて8方向
+        { "btn": "A", "action": "combat.attack.melee" },
+        { "btn": "B", "action": "ui.cancel" },
+        { "btn": "X", "action": "item.use" },
+        { "btn": "Y", "action": "item.throw" },
+        { "btn": "LB", "action": "target.prev" },
+        { "btn": "RB", "action": "target.next" },
+        { "btn": "START", "action": "inventory.open" },
+        { "btn": "BACK", "action": "mode.look.toggle" },
+        { "btn": "R_STICK_PRESS", "action": "wait" },
+        { "btn": "R_TRIG", "action": "interact.stairs" }
+      ],
+      "options": { "diagonalEnabled": true, "stickDeadzone": 0.35 }
+    }
+  },
+
+  // ─────────────────────────────────────
+  // 3) クイックバー（UI側と同期しておくと便利）
+  // ─────────────────────────────────────
+  "quickbar": {
+    "slots": 4,
+    "labels": ["1", "2", "3", "4"], // PCはDigit1-4と対応
+    "preferred": { "heal": 1, "food": 2 } // 初期割当のヒント
+  }
+}

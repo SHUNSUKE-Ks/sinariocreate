@@ -39,6 +39,7 @@ const SidePanel = ({ isOpen, toggleSidePanel }) => {
             <button className="bottom-btn" id="random-btn" onClick={randomizeStats}>ランダム</button>
             <button className="bottom-btn" id="load-skill-book-btn" onClick={handleLoadSkillBookClick}>スキルブック読込</button>
             <button className="bottom-btn" id="load-trait-book-btn" onClick={handleLoadTraitBookClick}>特質ブック読込</button>
+            <button className="bottom-btn" onClick={() => handleNavigation('/library')}>ライブラリ</button>
             <button className="bottom-btn" onClick={() => handleNavigation('/settings')}>設定</button>
           </div>
         </div>

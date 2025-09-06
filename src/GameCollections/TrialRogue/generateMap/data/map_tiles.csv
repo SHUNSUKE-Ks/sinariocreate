@@ -1,0 +1,6 @@
+tile_id,name,type,path,passable,blocksLOS,cost
+floor_basic,Floor,floor,Tile_Floor_16x16.svg,true,false,1
+stairs_down,Stairs Down,stairs,Tile_StairsDown_16x16.svg,true,false,
+wall_basic,Wall,wall,Wall_NS_16x16.svg,false,true,
+water_shore,Water Edge,water,Tile_WaterEdge_16x16.svg,false,false,
+

@@ -1,0 +1,16 @@
+{
+  "characters": {
+    "char_001": { "isInGame": true, "addedDate": "2025-01-15" },
+    "char_002": { "isInGame": false, "addedDate": "2025-01-16" }
+  },
+  "skills": {
+    "skill_001": { "isInGame": true, "addedDate": "2025-01-15" },
+    "skill_002": { "isInGame": false, "addedDate": "2025-01-16" }
+  },
+  "traits": {
+    "trait_001": { "isInGame": true, "addedDate": "2025-01-15" }
+  },
+  "abilities": {
+    "ability_001": { "isInGame": false, "addedDate": "2025-01-16" }
+  }
+}

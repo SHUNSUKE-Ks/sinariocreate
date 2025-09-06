@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <radialGradient id="vignette" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="rgba(0,0,0,0)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.55)"/>
+    </radialGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="none" stroke="#1f2937" stroke-width="1"/>
+      <path d="M20 0 V40 M0 20 H40" stroke="#1f2937" stroke-width="0.5" opacity="0.6"/>
+    </pattern>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <g id="sword">
+      <path d="M0 -140 L12 -122 L8 -118 L42 -84 L28 -70 L-6 -104 L-10 -100 Z" fill="#34d399" opacity="0.9"/>
+      <rect x="-6" y="-70" width="12" height="130" rx="6" ry="6" fill="#60a5fa"/>
+      <rect x="-22" y="60" width="44" height="16" rx="8" ry="8" fill="#e2e8f0"/>
+      <rect x="-28" y="74" width="56" height="12" rx="6" ry="6" fill="#94a3b8"/>
+    </g>
+    <pattern id="scan" width="2" height="2" patternUnits="userSpaceOnUse">
+      <rect width="2" height="1" fill="rgba(255,255,255,0.04)"/>
+      <rect y="1" width="2" height="1" fill="rgba(0,0,0,0.04)"/>
+    </pattern>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#grid)" opacity="0.35"/>
+  <rect width="1920" height="1080" fill="url(#vignette)"/>
+  <path d="M 64 64 Q 960.0 12.8 1856 64" 
+        stroke="#60a5fa" stroke-width="2" fill="none" opacity="0.35"/>
+  <path d="M 64 1016 Q 960.0 1067.2 1856 1016" 
+        stroke="#34d399" stroke-width="2" fill="none" opacity="0.35"/>
+  <g transform="translate(720.0, 436.8) scale(1.2)" opacity="0.35" filter="url(#glow)">
+    <use href="#sword"/>
+  </g>
+  <g filter="url(#glow)">
+    <text x="960.0" y="520.65" text-anchor="middle"
+      font-size="129" font-family="Montserrat, 'Segoe UI', Arial, sans-serif"
+      font-weight="800" letter-spacing="4" fill="#93c5fd">TRIAL ROGUE</text>
+  </g>
+  <text x="960.0" y="520.65" text-anchor="middle"
+    font-size="129" font-family="Montserrat, 'Segoe UI', Arial, sans-serif"
+    font-weight="800" letter-spacing="4" fill="white">TRIAL ROGUE</text>
+  <text x="960.0" y="610.95" text-anchor="middle"
+    font-size="30" font-family="'Noto Sans JP', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif"
+    fill="#cbd5e1" opacity="0.9">一手一手が運命を変える / Turn-based Roguelike</text>
+  <rect x="740.0" y="964.8" width="440" height="64" rx="32" fill="rgba(2,6,23,0.55)" stroke="rgba(148,163,184,0.5)"/>
+  <text x="960.0" y="1008.8" text-anchor="middle"
+    font-size="32" font-family="Montserrat, 'Segoe UI', Arial, sans-serif"
+    letter-spacing="2" fill="#e2e8f0">TAP TO START</text>
+  <rect width="1920" height="1080" fill="url(#scan)" opacity="0.33"/>
+</svg>

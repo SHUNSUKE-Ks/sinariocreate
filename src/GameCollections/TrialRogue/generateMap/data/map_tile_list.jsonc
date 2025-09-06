@@ -1,0 +1,10 @@
+{
+  // Base path for assets; can be '@/GameCollections/TrialRogue/generateMap/assets/tiles/svg' or png folder later
+  "basePath": "@/GameCollections/TrialRogue/generateMap/assets/tiles/svg",
+  "tiles": [
+    { "id": "floor_basic", "name": "Floor", "path": "Tile_Floor_16x16.svg", "type": "floor", "passable": true, "cost": 1 },
+    { "id": "stairs_down", "name": "Stairs Down", "path": "Tile_StairsDown_16x16.svg", "type": "stairs", "passable": true },
+    { "id": "wall_basic",  "name": "Wall", "path": "Wall_NS_16x16.svg", "type": "wall", "passable": false, "blocksLOS": true },
+    { "id": "water_shore", "name": "Water Edge", "path": "Tile_WaterEdge_16x16.svg", "type": "water", "passable": false }
+  ]
+}
