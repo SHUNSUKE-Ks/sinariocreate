@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import TabNavigation from '@/AppScreen/02_CharacterCreator/TabNavigation';
-import TalkScreenComponent from './TalkScreen';
+import TalkScreenComponent from '@/GameCollections/NovelTalk/screens/TalkScreen';
 
 const StoryScreen = () => {
   const [activeTab, setActiveTab] = useState('chapterList'); // 'chapterList', 'talkScreen', 'mainQuest', 'subQuest'
