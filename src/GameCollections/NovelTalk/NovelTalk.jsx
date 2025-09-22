@@ -8,6 +8,7 @@ import DialogueBlock from './components/DialogueBlock';
 import { loadCharacters } from './components/PersistStore';
 import { v4 as uuidv4 } from 'uuid';
 import useKeyMapManager from './components/useKeyMapManager';
+import CharacterScreen from './screens/CharacterScreen';
 
 import './styles/NovelTalk.css';
 
@@ -93,18 +94,29 @@ export default function NovelTalk({ initialScenario, onSave }) {
 
   const handleKeymapAction = (action) => {
     if (action.startsWith('select:')) {
-      const index = parseInt(action.split(':')[1], 10);
-      const charToSelect = characters[index];
+      const selectAction = action.split(':')[1];
 
-      if (charToSelect) {
+      if (selectAction === 'no_character') {
         if (focusedEditorId) {
-          // Update the character of the focused dialogue block
           setDialogueBlocks(dialogueBlocks.map(block =>
-            block.id === focusedEditorId ? { ...block, characterId: charToSelect.id } : block
+            block.id === focusedEditorId ? { ...block, characterId: null } : block
           ));
-        } else {
-          // If no editor is focused, update the global selectedId (for CharaCarousel/Preview)
-          setSelectedId(charToSelect.id);
+        } 
+        // Do nothing if no editor is focused and Alt+0 is pressed
+      } else {
+        const index = parseInt(selectAction, 10);
+        const charToSelect = characters[index];
+
+        if (charToSelect) {
+          if (focusedEditorId) {
+            // Update the character of the focused dialogue block
+            setDialogueBlocks(dialogueBlocks.map(block =>
+              block.id === focusedEditorId ? { ...block, characterId: charToSelect.id } : block
+            ));
+          } else {
+            // If no editor is focused, update the global selectedId (for CharaCarousel/Preview)
+            setSelectedId(charToSelect.id);
+          }
         }
       }
     }

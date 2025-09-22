@@ -22,7 +22,6 @@ const TalkEditor = forwardRef(({ value, onChange, placeholder, rows = 10, onFocu
       rows={rows}
       style={{
         width: '100%',
-        minHeight: '180px',
         resize: 'vertical',
         backgroundColor: '#333',
         color: '#ddd',

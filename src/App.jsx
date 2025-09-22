@@ -14,7 +14,7 @@ import CharacterCreatorScreen from '@/AppScreen/02_CharacterCreator/CharacterCre
 import ItemListScreen from '@/AppScreen/04_ItemList/ItemListScreen';
 import SkillListScreen from '@/AppScreen/05_SkillList/SkillListScreen';
 import StoryScreen from '@/AppScreen/06_Story/StoryScreen';
-import TalkLogScreen from '@/AppScreen/06_Story/TalkLogScreen.jsx';
+import TalkLogScreen from './AppScreen/06_Story/TalkLogScreen.jsx';
 import LibraryScreen from '@/AppScreen/07_Library/LibraryScreen';
 
 import SettingsScreen from '@/AppScreen/10_Settings/SettingsScreen';

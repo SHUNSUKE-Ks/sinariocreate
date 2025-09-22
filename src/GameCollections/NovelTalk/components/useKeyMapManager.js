@@ -6,10 +6,14 @@ const useKeyMapManager = ({ isEnabled, onAction, maxSlots = 9 }) => {
     if (!isEnabled) return;
 
     const handleKeyDown = (e) => {
-      if (e.altKey && e.key >= '1' && e.key <= maxSlots.toString()) {
+      if (e.altKey && e.key >= '0' && e.key <= maxSlots.toString()) {
         e.preventDefault();
-        const index = parseInt(e.key, 10) - 1;
-        onAction(`select:${index}`);
+        if (e.key === '0') {
+          onAction('select:no_character');
+        } else {
+          const index = parseInt(e.key, 10) - 1;
+          onAction(`select:${index}`);
+        }
       }
 
       // Add new key mappings for recording
