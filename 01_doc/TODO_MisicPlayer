@@ -1,0 +1,265 @@
+了解、マスター。
+**Codexにそのまま渡せる実装TODO**を用意したよ。アルバムジャケットはプレースホルダSVGでOK、**テスト曲は `src/assets/GameBGM` を参照**する前提でコメントも入れてある。必要ならこのまま `TODO_MisicPlayer.md` として保存して使ってね。
+
+---
+
+# TODO\_MisicPlayer — Codex実装指示
+
+## 0) 目的
+
+スクショ風BGMプレイヤーを**React 19 + Vite**で再現。
+左：NowPlaying（アート＋操作）／右：TrackList、Media Session & キーボード対応。
+**テスト音源は `src/assets/GameBGM` を必ず参照**（mp3/m4a想定。後述のサンプルJSONにコメントあり）。
+
+---
+
+## 1) フォルダーとベースファイル作成
+
+```
+src/MisicPlayer/
+  components/
+  hooks/
+  data/
+  styles/
+public/icons/
+public/art/
+```
+
+* `public/art/art_placeholder_512x512.svg`（512×512, 正方形・中央ロゴだけ）
+* `public/icons/*.svg`（play/pause/prev/next/repeat/repeat\_one/shuffle/menu/back/more/volume/mute/dot）
+
+  * すべて `*_24x24.svg`（ドットは `icon_dot_active_8x8.svg`）
+
+**Commit**: `chore(player): scaffold folders & placeholder svgs`
+
+---
+
+## 2) データ定義とサンプル
+
+`src/MisicPlayer/data/tracks.sample.json` を作成。
+※ **テスト曲の実体は `src/assets/GameBGM` に配置済み**。下の `src` はそこを指す。
+
+```jsonc
+[
+  {
+    "id": "test_0001",
+    "title": "Inevitable Fight (Test)",
+    "subtitle": "Story pack Battle Theme",
+    "album": "TEST PACK",
+    "artist": "—",
+    "duration": 0, // 読み込み後に<audio>から取得
+    "artwork": "/art/art_placeholder_512x512.svg",
+    "src": "/assets/GameBGM/inevitable_fight.mp3", // ← テスト曲は必ず src/assets/GameBGM から参照
+    "selected": true,
+    "tags": ["battle","story_pack"]
+  },
+  {
+    "id": "test_0002",
+    "title": "Everyday Pleasures (Test)",
+    "subtitle": "Home Menu Theme",
+    "album": "TEST PACK",
+    "artist": "—",
+    "duration": 0,
+    "artwork": "/art/art_placeholder_512x512.svg",
+    "src": "/assets/GameBGM/everyday_pleasures.mp3", // ← ここも GameBGM を参照
+    "selected": false,
+    "tags": ["menu"]
+  }
+]
+```
+
+**Commit**: `feat(player): add tracks.sample.json pointing to src/assets/GameBGM`
+
+---
+
+## 3) Hooks 実装
+
+> 役割は一言 / 引数は最小。状態と操作を返す。
+
+* `hooks/useAudioPlayer.js`（**<audio>制御を一元化**）
+
+  * 引数：`initialQueue`(Track\[]), `initialIndex`(0)
+  * 返値：`{ audioRef, state:{isPlaying,currentTime,duration,volume,repeatMode,shuffle,index,queue}, controls:{play,pause,toggle,seek,setVolume,next,prev,setRepeatMode,toggleShuffle,loadAt,setQueue} }`
+  * **ロジック**：`ended`時の `repeat(one|all)/shuffle`、`loadedmetadata`でduration更新
+* `hooks/useProgress.js`（**時間同期**）
+
+  * 引数：`audioRef` → 返値：`{currentTime,duration,percent}`
+* `hooks/useMediaSession.js`（**Media Session API**）
+
+  * `apply(track)` で `MediaMetadata`設定、`play/pause/seekto/next/previous`ハンドラ登録
+* `hooks/useKeyboardShortcuts.js`（**キーバインド**）
+
+  * Space/←→/J/K/L/↑/↓/S/R を `controls` に紐づけ
+* `hooks/usePersistedState.js`（**localStorage**）
+
+  * volume/repeat/shuffle/lastTrack を保存・復元
+
+**Commit**: `feat(player): core hooks (audio/progress/mediaSession/keyboard/persist)`
+
+---
+
+## 4) コンポーネント作成
+
+> 役割・props・CSS意味（各一言）
+
+1. `components/HeaderBar.jsx`
+
+   * 役割：ヘッダー
+   * props：`title`(string), `count`(string|number), `onBack`(fn), `onMenu`(fn)
+   * CSS：固定高さ・左右配置
+2. `components/NowPlayingCard.jsx`
+
+   * 役割：アート＋メタ＋カルーセル枠
+   * props：`track`(Track), `prev`(Track|null), `next`(Track|null)
+   * CSS：中央拡大・前後縮小透過
+3. `components/ProgressBar.jsx`
+
+   * 役割：シーク
+   * props：`current`(sec), `duration`(sec), `onSeek`(fn)
+   * CSS：太めバー、ドラッグ対応
+4. `components/PlaybackButtons.jsx`
+
+   * 役割：再生/前/次
+   * props：`isPlaying`, `onPlayPause`, `onPrev`, `onNext`
+   * CSS：丸ボタン影
+5. `components/RepeatShuffleButtons.jsx`
+
+   * 役割：リピート/シャッフル
+   * props：`repeatMode`('off'|'one'|'all'), `shuffle`(bool), `onToggleRepeat`(fn), `onToggleShuffle`(fn)
+   * CSS：アイコンTint
+6. `components/TransportBar.jsx`
+
+   * 役割：Progress＋操作のコンテナ
+   * props：`playerState`, `controls`
+   * CSS：2行グリッド
+7. `components/TrackList.jsx`
+
+   * 役割：右のリスト
+   * props：`tracks`(Track\[]), `currentId`, `onSelect`, `filterSelected`(bool)
+   * CSS：スクロール
+8. `components/TrackListItem.jsx`
+
+   * 役割：1行
+   * props：`track`, `isActive`, `onClick`
+   * CSS：選択強調・右側…メニュー
+9. `components/FilterToggle.jsx`
+
+   * 役割：「選択のみ表示」トグル
+   * props：`checked`, `onChange`
+   * CSS：スイッチ
+10. `components/VolumePopover.jsx`
+
+    * 役割：音量調整
+    * props：`volume`, `onChange`
+    * CSS：縦スライダー
+11. `components/ContextMenu.jsx`
+
+    * 役割：…メニュー
+    * props：`items`({label,action}\[])
+    * CSS：浮遊カード
+12. `components/EmptyState.jsx`
+
+    * 役割：エラー/空時
+    * props：`message`
+    * CSS：センター配置
+
+**Commit**: `feat(player): components skeleton (header/nowplaying/transport/list)`
+
+---
+
+## 5) スタイル
+
+`src/MisicPlayer/styles/player.css`
+
+* グリッド：`[64px header] + [auto content]`、左右 `48%/52%`
+* 背景：アートをぼかし、暗幕 `rgba(0,0,0,.55)`
+* ボタン：`border-radius: 9999px; box-shadow: var(--elevation-2)`
+* 角丸：カード r-16、行 r-12
+* フォント：Title 18–20 / Name 15 / Sub 12
+* 200ms ease のトランジション
+
+**Commit**: `style(player): glass-dark theme & layout grid`
+
+---
+
+## 6) 配線（画面統合）
+
+`src/MisicPlayer/Player.jsx`
+
+* `tracks.sample.json` を読み込み、`useAudioPlayer(tracks)` で状態作成
+* `<audio ref={audioRef} src={queue[index].src} preload="metadata" />`
+
+  * **NOTE**: `src` は **`/assets/GameBGM/...`（= `src/assets/GameBGM` の公開パス）** を指す。テスト時は必ずこのパスで解決するようにビルド設定を確認。
+* 左：`NowPlayingCard` + `TransportBar`
+* 右：`FilterToggle` + `TrackList`
+* `useMediaSession().apply(queue[index])` を再生時にコール
+* `useKeyboardShortcuts(controls)` をマウント時登録
+
+**Commit**: `feat(player): wire hooks & components in Player.jsx`
+
+---
+
+## 7) ルーティング/エントリ
+
+`src/App.jsx` に簡易ルート
+
+```jsx
+import Player from "@/MisicPlayer/Player.jsx";
+export default function App(){ return <Player />; }
+```
+
+**Commit**: `chore(app): mount MisicPlayer at root`
+
+---
+
+## 8) アクセシビリティ & Android/PWA
+
+* すべての操作ボタンに `aria-label`
+* Media Session の `setActionHandler('play'|'pause'|'previoustrack'|'nexttrack'|'seekto')`
+* `<audio>` はユーザー操作後に `play()` を呼ぶ（自動再生規制回避）
+
+**Commit**: `feat(player): a11y labels & media session actions`
+
+---
+
+## 9) 動作チェック（受け入れ基準）
+
+* [ ] `src/assets/GameBGM` のテスト曲で再生できる（**パスは `/assets/GameBGM/...`**）
+* [ ] 左右スワイプで曲切替（モバイル）／クリックで前後
+* [ ] Progress ドラッグでシーク、時間表示が同期
+* [ ] Repeat（off→all→one）トグル・Shuffle トグル動作
+* [ ] 右リストで選択曲のみ表示トグルが効く
+* [ ] 現在曲が右リストでハイライト＆自動スクロール
+* [ ] Space/←→/J/K/L/↑/↓/S/R が機能
+* [ ] Media Session からロックスクリーン操作可能（Android）
+* [ ] volume/repeat/shuffle/lastTrack が再訪時に復元
+* [ ] PWA化後もバックグラウンド再生が継続
+
+---
+
+## 10) 既知の注意点（Codex向けメモ）
+
+* **音源パス**：必ず `src/assets/GameBGM` を公開配下に出す（Viteは `/assets/..` として配信）。ビルド後も相対で壊れないか確認。
+* **コーデック差**：再生不可時は `mp3` を優先。`m4a(aac)` も可。
+* **初回再生**：モバイルはユーザー操作必須。`onClick` で `play()` を呼ぶ。
+* **大規模リスト**：当面はそのまま。将来はバーチャライズ検討。
+
+---
+
+## 付録：最小プレースホルダSVG（そのまま保存OK）
+
+**`public/art/art_placeholder_512x512.svg`**
+
+```svg
+<!-- art_placeholder_512x512.svg (w=512, h=512) -->
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512">
+  <rect width="512" height="512" fill="#222"/>
+  <rect x="32" y="32" width="448" height="448" fill="none" stroke="#555" stroke-width="4"/>
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+        fill="#aaa" font-size="24" font-family="system-ui, sans-serif">ALBUM ART</text>
+</svg>
+```
+
+---
+
+必要になったら、このTODOを**細分化したPR単位のテンプレ**や `create_project_structure.js` も作るよ。

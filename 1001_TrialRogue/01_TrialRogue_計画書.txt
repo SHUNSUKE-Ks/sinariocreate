@@ -1,0 +1,172 @@
+src/GameCollections/TrialRogue/に“丸ごと隔離”で入れるやり方がベストです。
+既存アプリ（Home/Story/Library…）と一切混ぜず、マイクロアプリとして差し込みましょう。下のガイドに従えば、フォルダーごと他プロジェクトへ持ち出しも容易です。
+
+推奨ポリシー（要点3つ）
+
+依存の逆流禁止
+TrialRogue外のコンポーネント/Contextに直参照しない（どうしても使うなら“アダプタ”を介す）。
+→ これで「フォルダー単体コピー」で動かせます。
+
+アセット相対化 & エイリアス
+タイル画像やJSONCは ./ か @trial で参照（public/直参照や絶対パスを避ける）。
+
+CSS/状態のスコープ化
+CSSは tr-接頭（例：.tr-battle-wrap）、状態はローカルProviderで閉じる（外界のTheme等に依存しない）。
+
+最終レイアウト（完全隔離版）
+src/
+└─ GameCollections/
+   └─ TrialRogue/
+      ├─ index.jsx                   # 入口（シーンルーター）
+      ├─ screens/                    # 画面
+      │  ├─ TitleScreen.jsx
+      │  ├─ StageSelectScreen.jsx
+      │  ├─ LoadingScreen.jsx
+      │  ├─ BattleScreen.jsx
+      │  └─ ResultScreen.jsx
+      ├─ systems/                    # ロジック/フック（この中で閉じる）
+      │  ├─ useSceneRouter.js
+      │  ├─ usePreloader.js
+      │  ├─ useBattleLoop.js
+      │  └─ rng.js
+      ├─ ui/                         # このゲーム専用のUI
+      │  ├─ HUD.jsx
+      │  ├─ MessageLog.jsx
+      │  ├─ InventoryQuickbar.jsx
+      │  ├─ TileCanvas.jsx
+      │  ├─ DPad.jsx
+      │  ├─ ActionCluster.jsx
+      │  ├─ StageGrid.jsx
+      │  ├─ StageCard.jsx
+      │  ├─ ProgressBar.jsx
+      │  ├─ FadeTransition.jsx
+      │  ├─ Toast.jsx
+      │  └─ AudioBus.jsx
+      ├─ data/
+      │  ├─ stages.json
+      │  └─ keymaps/ combat_keymap.jsonc
+      ├─ generateMap/                # 生成地図ユニット（この中に完結）
+      │  ├─ assets/tiles/svg/...
+      │  ├─ data/ map_tile_list.jsonc, map_tiles.csv
+      │  └─ scripts/ dungeon_auto_generate.js, tilemap_auto_generate.js, autotile.js, biome.js, export_grid.js
+      └─ styles/ trialrogue.css      # CSSは接頭 tr- を徹底
+
+
+既存の src/components/ は使わず、TrialRogue/ui に必要最小限を複製（または軽量版を用意）。
+こうするとフォルダーを丸ごとコピーしても壊れません。
+
+Vite の alias（任意だけど便利）
+
+vite.config.js
+
+import { fileURLToPath, URL } from 'node:url';
+export default {
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@trial': fileURLToPath(new URL('./src/GameCollections/TrialRogue', import.meta.url))
+    }
+  }
+};
+
+
+@trial/... で TrialRogue 内に閉じた参照が書けます（移植のとき置換が楽）。
+
+既存アプリへの“安全な”組み込み（2通り）
+A) ルーティング型（推奨：混ざらない）
+
+既存 App.jsx に遅延読み込みで差し込むだけ。
+
+// App.jsx（一例：React Router v6）
+import { Suspense, lazy } from 'react';
+const TrialRogue = lazy(() => import('@/GameCollections/TrialRogue'));
+/* ・・・既存ルート・・・ */
+<Route path="/trial-rogue/*"
+  element={
+    <Suspense fallback={<div>Loading…</div>}>
+      <TrialRogue basePath="/trial-rogue" />
+    </Suspense>
+  }
+/>
+
+
+分離点：TrialRogue は自身の中で Title→Select→Loading→Battle→Result を完結。
+
+コード分割：使うまでバンドルに入らず、既存アプリの体感速度を守れます。
+
+B) スタブマウント型（ルーター非使用の既存構成向け）
+// どこかのメニューから
+import TrialRogueApp from '@trial/index.jsx';
+<button onClick={() => setShowTR(true)}>Trial Rogueを起動</button>
+{showTR && <TrialRogueApp basePath="" onExit={() => setShowTR(false)} />}
+
+
+Modal/Overlayに独立状態で載せる（外のContextを汚さない）。
+
+index.jsx（最小ルーター雛形）
+// src/GameCollections/TrialRogue/index.jsx
+import { useState } from 'react';
+import TitleScreen from './screens/TitleScreen.jsx';
+import StageSelectScreen from './screens/StageSelectScreen.jsx';
+import LoadingScreen from './screens/LoadingScreen.jsx';
+import BattleScreen from './screens/BattleScreen.jsx';
+import ResultScreen from './screens/ResultScreen.jsx';
+
+export default function TrialRogueApp({ basePath = '/trial-rogue', onExit }) {
+  // 役割：シーン管理（**一言**：画面を切り替える）
+  const [scene, setScene] = useState('title');
+  const [stage, setStage] = useState(null);
+  const [result, setResult] = useState(null);
+
+  if (scene === 'title') {
+    return <TitleScreen onStart={() => setScene('select')} onExit={onExit} />;
+  }
+  if (scene === 'select') {
+    return <StageSelectScreen
+      onBack={() => setScene('title')}
+      onPlay={(stg) => { setStage(stg); setScene('loading'); }}
+    />;
+  }
+  if (scene === 'loading') {
+    return <LoadingScreen stage={stage} onReady={() => setScene('battle')} />;
+  }
+  if (scene === 'battle') {
+    return <BattleScreen stage={stage} onFinish={(stats) => { setResult(stats); setScene('result'); }} />;
+  }
+  return <ResultScreen result={result}
+    onRetry={() => setScene('loading')}
+    onSelect={() => setScene('select')}
+  />;
+}
+
+
+props：basePath（内部リンクの基点）、onExit（Aパターンなら不要）。
+
+関数の役割（1行）：setScene＝状態遷移のトリガー。
+
+資産・パスの扱い（壊れにくい書き方）
+
+画像/音は必ず import か new URL(..., import.meta.url) で解決
+
+import floorSvg from './generateMap/assets/tiles/svg/Tile_Floor_16x16.svg';
+// or
+const url = new URL('./generateMap/assets/tiles/svg/Tile_Floor_16x16.svg', import.meta.url).href;
+
+
+→ public/直参照や絶対パスは移植時に破綻しやすい。
+
+JSONC/CSVは fetch(new URL('./data/map_tiles.csv', import.meta.url)) で読む。
+
+CSSは styles/trialrogue.css を index.jsxでだけimport（他へ漏れない）
+
+import './styles/trialrogue.css'; // .tr-* のみ命名
+
+既存プロジェクトとの共存Tips
+
+グローバルContextを使わない（必要なら TrialRogueProvider を内側に用意）
+
+キー入力/ショートカット：keydownリスナーはindex.jsxで登録・解除
+
+音声：AudioContextはユーザー操作後に作成（モバイル制限対策）
+
+PWA：manifest/iconは既存のままでOK（試遊ページ /trial-rogue だけ追加）

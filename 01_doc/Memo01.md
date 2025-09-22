@@ -40,4 +40,13 @@ src\AppScreen ＞ 00_Manager
 
 AppManager//画面遷移 CardContllerManager//カードコンポーネントのポジション管理、状態管理、
 
+## ファイヤーベースの実装
 01_doc\Firebase_Integration_Manual.md を参照してファイヤーベースを実装してください .env=C:\Users\enjoy\React_AppLists\sinariocreate_ver2.1\.env
+firebase-config.js=C:\Users\enjoy\React_AppLists\sinariocreate_ver2.1\firebase-config.js
+npm install firebaseはinstall済み
+added 82 packages, and audited 628 packages in 25s
+
+144 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities

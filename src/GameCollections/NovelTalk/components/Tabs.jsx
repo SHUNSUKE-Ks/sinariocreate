@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TabBar = ({ tabs, activeTab, onTabClick, orientation = 'horizontal' }) => {
+const Tabs = ({ tabs, activeTab, onTabClick, orientation = 'horizontal' }) => {
   const style = {
     display: 'flex',
     flexDirection: orientation === 'horizontal' ? 'row' : 'column',
@@ -27,4 +27,4 @@ const TabBar = ({ tabs, activeTab, onTabClick, orientation = 'horizontal' }) => 
   );
 };
 
-export default TabBar;
+export default Tabs;

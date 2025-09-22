@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import TabNavigation from '@/AppScreen/02_CharacterCreator/TabNavigation';
-import TalkScreenComponent from '@/GameCollections/NovelTalk/screens/TalkScreen';
+
 
 const StoryScreen = () => {
   const [activeTab, setActiveTab] = useState('chapterList'); // 'chapterList', 'talkScreen', 'mainQuest', 'subQuest'
@@ -17,7 +17,7 @@ const StoryScreen = () => {
       case 'chapterList':
         return <div><h3>チャプターリスト</h3><p>ここにチャプターリストの内容が表示されます。</p></div>;
       case 'talkScreen':
-        return <TalkScreenComponent />;
+        return <div><h3>トーク画面</h3><p>NovelTalk機能は専用のタブからアクセスしてください。</p></div>;
       case 'mainQuest':
         return <div><h3>メインクエスト</h3><p>ここにメインクエストの内容が表示されます。</p></div>;
       case 'subQuest':

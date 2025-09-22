@@ -1,0 +1,17 @@
+// ✅ 00_Exp_Knight.json （表情差分）
+// キャラの表情差分を管理するファイル
+// "id" は識別子、"description" はわかりやすい説明、"image_path" は画像のパス
+{
+  "expressions": [
+    {
+      "id": "neutral", // 通常顔（無表情）
+      "description": "Neutral face",
+      "image_path": "src/assets/characterImageList/Knight/Knight_neutral.png"
+    },
+    {
+      "id": "happy", // 笑顔（目を開けて微笑む）
+      "description": "Smiling, eyes open",
+      "image_path": "src/assets/characterImageList/Knight/Knight_happy.png"
+    }
+  ]
+}

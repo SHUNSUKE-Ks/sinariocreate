@@ -24,7 +24,7 @@ import StageSelectScreen from '@/GameCollections/TrialRogue/screens/StageSelectS
 import LoadingScreen from '@/GameCollections/TrialRogue/screens/LoadingScreen.jsx';
 import BattleScreen from '@/GameCollections/TrialRogue/screens/BattleScreen.jsx';
 import TileTestScreen from '@/GameCollections/TrialRogue/screens/TileTestScreen.jsx';
-import NovelTalkApp from '@/GameCollections/NovelTalk/NovelTalkApp.jsx';
+import NovelTalk from '@/GameCollections/NovelTalk/NovelTalk.jsx';
 
 function App() {
   const { isOpen, toggleSidePanel } = useSidePanel();
@@ -70,7 +70,7 @@ function App() {
                 <Route path="/trialrogue/loading" element={<LoadingScreen />} />
                 <Route path="/trialrogue/battle" element={<BattleScreen />} />
                 <Route path="/trialrogue-preview" element={<MapPreview />} />
-                <Route path="/novel-talk" element={<NovelTalkApp />} />
+                <Route path="/novel-talk" element={<NovelTalk />} />
               </Routes>
             </main>
           </div>

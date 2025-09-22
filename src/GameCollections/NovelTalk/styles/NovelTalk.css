@@ -1,0 +1,71 @@
+.novel-talk {
+   width: 100%;
+   max-width: 1200px;
+   margin: 0 auto;
+   padding: 8px;
+   box-sizing: border-box;
+   color: #fff;
+}
+
+.nt-separator {
+   height: 2px;
+   background: #fff;
+   opacity: 0.8;
+   margin: 12px 0;
+}
+
+.nt-body {
+   display: grid;
+   grid-template-columns: 160px 1fr;
+   gap: 20px;
+   align-items: start;
+   min-height: 240px;
+}
+
+.nt-left {
+   padding: 12px;
+}
+
+.nt-right {
+   padding: 12px;
+}
+
+.nt-chara-row {
+   display: flex;
+   gap: 18px;
+   padding: 12px 8px;
+   overflow-x: auto;
+   align-items: center;
+}
+
+.chara-item {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   width: 88px;
+}
+
+.talk-editor textarea {
+   width: 100%;
+   min-height: 180px;
+   resize: vertical;
+   background: #333;
+   color: #ddd;
+   padding: 16px;
+   border-radius: 4px;
+   border: 1px solid #555;
+}
+
+@media (max-width:640px) {
+   .nt-body {
+       grid-template-columns: 1fr;
+   }
+
+   .nt-left {
+       order: 2;
+   }
+
+   .nt-right {
+       order: 1;
+   }
+}

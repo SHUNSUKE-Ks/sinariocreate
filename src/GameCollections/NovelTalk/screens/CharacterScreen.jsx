@@ -34,12 +34,21 @@ const CharacterScreen = ({ initialCharacters, onCharactersChange }) => {
     }
   };
 
+  const handleEditCharacter = (id, newName) => {
+    const newCharacters = characters.map(char => 
+      char.id === id ? { ...char, name: newName } : char
+    );
+    setCharacters(newCharacters);
+    setToastMessage(`キャラクター名を「${newName}」に更新しました`);
+  };
+
   return (
-    <div>
+    <div style={{ backgroundColor: '#222', padding: '20px', borderRadius: '8px' }}>
       <CharacterDictionary
         characters={characters}
         onAdd={handleAddCharacter}
         onRemove={handleRemoveCharacter}
+        onEdit={handleEditCharacter}
       />
       <Toast message={toastMessage} onClose={() => setToastMessage('')} />
     </div>

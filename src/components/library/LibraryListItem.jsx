@@ -1,34 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 /**
- * リストの各行アイテム
+ * ライブラリ行アイテム
  * @param {object} props
- * @param {object} props.item - 表示するアイテムのデータ
- * @param {string} props.mode - 現在のモード ('view' or 'edit')
- * @param {string} props.type - アイテムの種類 ('character' or 'skill')
+ * @param {object} props.item
+ * @param {string} props.mode 'view' | 'edit'
+ * @param {string} props.type 'character' | 'skill'
  */
 const LibraryListItem = ({ item, mode, type }) => {
-
   const handleCheckboxChange = () => {
-    // TODO: Firestoreの`gameReflectionStatus`を更新する
     console.log(`Checkbox for ${item.id} changed.`);
   };
+  const handleEdit = () => console.log(`Edit ${item.id}`);
+  const handleDelete = () => console.log(`Delete ${item.id}`);
 
-  const handleEdit = () => {
-    // TODO: 編集画面に遷移するロジック
-    console.log(`Edit ${item.id}`);
-  };
-
-  const handleDelete = () => {
-    // TODO: Firestoreからマスターデータと状態データを削除するロジック
-    console.log(`Delete ${item.id}`);
-  };
-
-  // 観覧モードのレイアウト
+  // View mode
   if (mode === 'view') {
+    if (type === 'character' && Array.isArray(item.expressions) && item.expressions.length > 0) {
+      const [idx, setIdx] = useState(0);
+      const cur = item.expressions[idx % item.expressions.length];
+      const next = () => setIdx(i => (i + 1) % item.expressions.length);
+      return (
+        <button onClick={next} className="w-full text-left flex items-center p-3 bg-gray-800 rounded-lg hover:bg-gray-700">
+          <img src={cur.url} alt={cur.id} className="w-10 h-10 object-contain rounded-md mr-4" />
+          <div>
+            <div className="font-bold text-white">{item.name}</div>
+            <div className="text-sm text-gray-400">{cur.id}</div>
+          </div>
+        </button>
+      );
+    }
     return (
       <div className="flex items-center p-3 bg-gray-800 rounded-lg">
-        <div className="w-10 h-10 bg-gray-700 rounded-md mr-4">{/* icon */}</div>
+        <div className="w-10 h-10 bg-gray-700 rounded-md mr-4"></div>
         <div>
           <div className="font-bold text-white">{item.name}</div>
           {type === 'skill' && <div className="text-sm text-gray-400">{item.effect}</div>}
@@ -37,11 +41,11 @@ const LibraryListItem = ({ item, mode, type }) => {
     );
   }
 
-  // 編集モードのレイアウト
+  // Edit mode
   return (
     <div className="flex items-center p-3 bg-gray-800 border border-gray-700 rounded-lg">
-      <input 
-        type="checkbox" 
+      <input
+        type="checkbox"
         checked={item.isInGame}
         onChange={handleCheckboxChange}
         className="w-5 h-5 mr-4 bg-gray-900 border-gray-600 rounded text-sky-500 focus:ring-sky-600"
@@ -58,3 +62,4 @@ const LibraryListItem = ({ item, mode, type }) => {
 };
 
 export default LibraryListItem;
+
